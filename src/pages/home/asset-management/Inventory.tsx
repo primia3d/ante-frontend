@@ -10,22 +10,20 @@ import { Button } from '@/components/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/DropdownMenu';
 import { Input } from '@/components/Input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/Table';
-import { AddInventoryItem, assetManagementTabAtom } from '@/features/AssetManagement';
+import {
+  AddInventoryItem,
+  assetManagementTabAtom,
+  inventoryAtom,
+  inventoryCurrentPageAtom,
+  inventoryPageSizeAtom,
+} from '@/features/AssetManagement';
 import { CustomIcon } from '@/features/CustomIcon';
 import { useBoolean } from '@/hooks/useBoolean';
+import { TInventory } from '@/types/assetManagement';
+import { cn } from '@/utils/cn';
 import { useAtom } from 'jotai';
-import { EllipsisIcon, EllipsisVerticalIcon } from 'lucide-react';
-import { useState } from 'react';
-
-export type TInventory = {
-  id: string;
-  description: string;
-  stocks: number;
-  uom: string;
-  unitPrice: number;
-  totalCost: number;
-  location: string;
-};
+import { ChevronLeftIcon, ChevronRightIcon, EllipsisIcon, EllipsisVerticalIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export const inventoryHeader = [
   'Item Number',
@@ -41,7 +39,8 @@ export const inventoryHeader = [
 export const inventoryItems: TInventory[] = [
   {
     id: 'inventory-1',
-    description: 'Steel Bar',
+    itemNumber: 1,
+    description: 'Steel Bar 1',
     stocks: 50,
     uom: 'pc.',
     unitPrice: 0,
@@ -50,7 +49,8 @@ export const inventoryItems: TInventory[] = [
   },
   {
     id: 'inventory-2',
-    description: 'Steel Bar',
+    itemNumber: 2,
+    description: 'Steel Bar 2',
     stocks: 50,
     uom: 'pc.',
     unitPrice: 0,
@@ -59,7 +59,8 @@ export const inventoryItems: TInventory[] = [
   },
   {
     id: 'inventory-3',
-    description: 'Steel Bar',
+    itemNumber: 3,
+    description: 'Steel Bar 3',
     stocks: 50,
     uom: 'pc.',
     unitPrice: 0,
@@ -68,7 +69,8 @@ export const inventoryItems: TInventory[] = [
   },
   {
     id: 'inventory-4',
-    description: 'Steel Bar',
+    itemNumber: 4,
+    description: 'Steel Bar 4',
     stocks: 50,
     uom: 'pc.',
     unitPrice: 0,
@@ -77,7 +79,98 @@ export const inventoryItems: TInventory[] = [
   },
   {
     id: 'inventory-5',
-    description: 'Steel Bar',
+    itemNumber: 5,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-6',
+    itemNumber: 6,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-7',
+    itemNumber: 7,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-8',
+    itemNumber: 8,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-9',
+    itemNumber: 9,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-10',
+    itemNumber: 10,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-11',
+    itemNumber: 11,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-12',
+    itemNumber: 12,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-13',
+    itemNumber: 13,
+    description: 'Steel Bar 5',
+    stocks: 50,
+    uom: 'pc.',
+    unitPrice: 0,
+    totalCost: 0,
+    location: 'main warehouse',
+  },
+  {
+    id: 'inventory-14',
+    itemNumber: 14,
+    description: 'Steel Bar 15',
     stocks: 50,
     uom: 'pc.',
     unitPrice: 0,
@@ -88,8 +181,43 @@ export const inventoryItems: TInventory[] = [
 
 export default function Inventory() {
   const [, setTab] = useAtom(assetManagementTabAtom);
-  const [inventory, setInventory] = useState<TInventory[]>(inventoryItems);
+  const [inventory] = useAtom(inventoryAtom);
+
+  const [currentPage, setCurrentPage] = useAtom(inventoryCurrentPageAtom);
+  const [pageSize] = useAtom(inventoryPageSizeAtom);
+
   const { value: isAddItemOpen, set: setIsAddItemOpen } = useBoolean(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.currentTarget.value);
+  };
+
+  const filteredInventory = inventory.filter(
+    (item) =>
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const totalPages = Math.ceil(filteredInventory.length / pageSize);
+  const canGoToPrevious = currentPage > 1;
+  const canGoToNext = currentPage < totalPages;
+
+  const goToPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const displayedFixtures = filteredInventory.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    if (currentPage > 1) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
   return (
     <div className="flex h-full flex-col gap-10">
@@ -119,25 +247,25 @@ export default function Inventory() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="" align="end">
-              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()} disabled>
                 Edit Inventory
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()} disabled>
                 Accept Item
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()} disabled>
                 Request for Delivery
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()} disabled>
                 Delivery History
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()} disabled>
                 Request for Purchase
               </DropdownMenuItem>
               <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={() => setIsAddItemOpen(true)}>
                 Add Item
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem className="px-5 py-3 text-custom-300" onClick={(e) => e.stopPropagation()} disabled>
                 Lock Inventory
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -153,6 +281,8 @@ export default function Inventory() {
               type="text"
               placeholder="Search..."
               className="h-9 min-w-52 rounded border bg-white placeholder:font-semibold placeholder:text-custom-200 lg:min-w-72"
+              value={searchQuery}
+              onChange={handleSearch}
             />
             <CustomIcon variant="search" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-custom-200" />
           </div>
@@ -169,7 +299,7 @@ export default function Inventory() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {inventory.map(({ description, id, location, stocks, totalCost, unitPrice, uom }, index) => (
+              {displayedFixtures.map(({ description, id, location, stocks, totalCost, unitPrice, uom }, index) => (
                 <TableRow key={id} className="hover:cursor-pointer hover:bg-gray-50">
                   <TableCell className="p-5 text-custom-300">{(index + 1).toFixed(1)}</TableCell>
                   <TableCell className="p-5 text-custom-300">{description}</TableCell>
@@ -193,8 +323,47 @@ export default function Inventory() {
                   </TableCell>
                 </TableRow>
               ))}
+              {!filteredInventory.length && (
+                <p className="absolute left-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-center text-base text-custom-300">
+                  No items found.
+                </p>
+              )}
             </TableBody>
           </Table>
+        </div>
+        <div className="flex justify-center gap-1 py-5">
+          {canGoToPrevious && (
+            <Button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded bg-custom-100 hover:bg-primary-100 hover:text-white"
+              onClick={() => goToPage(currentPage - 1)}
+            >
+              <ChevronLeftIcon className="h-4 w-4" />
+            </Button>
+          )}
+
+          {pageNumbers.map((pageNumber) => (
+            <Button
+              type="button"
+              key={pageNumber}
+              className={cn(
+                'flex h-8 w-8 items-center justify-center rounded bg-custom-100 hover:bg-primary-100 hover:text-white',
+                pageNumber === currentPage && 'bg-primary-100 text-white',
+              )}
+              onClick={() => goToPage(pageNumber)}
+            >
+              {pageNumber}
+            </Button>
+          ))}
+          {canGoToNext && (
+            <Button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded bg-custom-100 hover:bg-primary-100 hover:text-white"
+              onClick={() => goToPage(currentPage + 1)}
+            >
+              <ChevronRightIcon className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </section>
     </div>

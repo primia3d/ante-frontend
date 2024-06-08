@@ -6,7 +6,8 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default: '',
-        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+        destructive:
+          'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 py-3 px-4 font-bold rounded-[10px] text-white',
         outline: 'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-custom-100 hover:bg-custom-100/90 py-3 px-4 font-semibold rounded-[10px]',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
