@@ -18,6 +18,7 @@ import TreasuryPage from './home/treasury';
 import { IS_LOGGED_IN } from '@/constants/common';
 import { RootLayout } from '@/layouts/RootLayout';
 import { SettingsLayout } from '@/layouts/SettingsLayout';
+import Inventory from './home/asset-management/Inventory';
 
 const authRouter: RouteObject[] = [
   {
@@ -52,6 +53,10 @@ const homeRouter: RouteObject[] = [
       {
         path: '/asset-management',
         element: <AssetManagementPage />,
+      },
+      {
+        path: '/asset-management/warehouse/:id',
+        element: <Inventory />,
       },
       {
         path: '/manpower',

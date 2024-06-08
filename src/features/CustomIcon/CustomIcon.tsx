@@ -1,6 +1,6 @@
 import { cn } from '@/utils/cn';
 
-type TCustomIcon =
+export type TCustomIcon =
   | 'sun'
   | 'star'
   | 'clock'
@@ -23,7 +23,8 @@ type TCustomIcon =
   | 'kanban'
   | 'list'
   | 'tasks'
-  | 'user';
+  | 'user'
+  | 'warehouse';
 
 type CustomIconProps = {
   variant?: TCustomIcon;
@@ -370,6 +371,23 @@ export function CustomIcon({ variant, className }: CustomIconProps) {
           <path
             fill="currentColor"
             d="M7.5 6.875a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12.238 10.3c.177.205.262.47.262.742v.833c0 .69-.56 1.25-1.25 1.25h-7.5c-.69 0-1.25-.56-1.25-1.25v-.833c0-.271.085-.537.262-.743A6.236 6.236 0 0 1 7.5 8.125c1.895 0 3.592.843 4.738 2.174Z"
+          />
+        </svg>
+      );
+      break;
+    case 'warehouse':
+      icon = (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className={cn('h-5 w-5 flex-shrink-0 fill-none', className)}
+          viewBox="0 0 22 18"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M1.834 16.333h1.833m0 0h5.5m-5.5 0V8.498c0-.49 0-.735.06-.963.053-.202.14-.393.257-.566.133-.195.316-.356.685-.679L9.07 2.44c.684-.598 1.025-.897 1.41-1.01.34-.101.701-.101 1.04 0 .386.113.728.412 1.412 1.011l4.4 3.85c.37.323.553.484.685.68.118.172.204.363.257.565.06.228.06.473.06.963v7.835m-9.167 0h3.667m-3.667 0v-3.666a1.833 1.833 0 0 1 3.667 0v3.666m0 0h5.5m0 0h1.833"
           />
         </svg>
       );

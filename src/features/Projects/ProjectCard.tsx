@@ -96,8 +96,8 @@ export function ProjectCard({ id, budget, client, description, endDate, name, st
   };
 
   return (
-    <li className="projectCard hover:-translate-y-[10px] hover:cursor-pointer">
-      <Card>
+    <li>
+      <Card className="relative border-none shadow-none transition duration-300 hover:-translate-y-[10px] hover:cursor-pointer hover:shadow">
         <CardHeader className="space-y-3 pb-3">
           <CardTitle className="flex justify-between">
             <span>{name}</span>
