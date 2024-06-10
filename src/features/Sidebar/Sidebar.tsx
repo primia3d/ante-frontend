@@ -1,11 +1,9 @@
-import { ChevronFirst, ChevronLast, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
-import { useAtom } from 'jotai';
 import { Link } from 'react-router-dom';
 
 import { NavItem } from './NavItem';
 import { useSideBarData } from './useSideBarData';
-import { sidebarAtom } from './sidebarAtom';
 
 import { cn } from '@/utils/cn';
 import { Button } from '@/components/Button';
@@ -17,13 +15,11 @@ type SidebarProps = {
 
 export function Sidebar({ isHidden, setIsHidden }: SidebarProps) {
   const sideBarData = useSideBarData();
-  const [isExpanded, setIsExpanded] = useAtom(sidebarAtom);
 
   const sidebarRef = useRef<HTMLElement | null>(null);
 
   const handleLogout = async () => {
     localStorage.removeItem('token');
-
     window.location.href = '/';
   };
 
@@ -57,23 +53,12 @@ export function Sidebar({ isHidden, setIsHidden }: SidebarProps) {
           !isHidden && 'z-40 opacity-100',
         )}
       />
-      <button
-        type="button"
-        onClick={() => setIsExpanded(!isExpanded)}
-        className={cn(
-          'absolute left-[270px] top-3 z-[51] hidden rounded-lg bg-secondary-200 p-1 text-white transition duration-150 ease-in-out hover:bg-secondary-200/90 lg:block',
-          isExpanded ? 'translate-x-0' : '-translate-x-[218px]',
-        )}
-      >
-        {isExpanded ? <ChevronFirst /> : <ChevronLast />}
-      </button>
-
       <aside
         ref={sidebarRef}
         className={cn(
           'absolute left-0 top-0 z-50 flex h-[100dvh] flex-col overflow-hidden bg-primary-200 text-white shadow duration-150 ease-in-out lg:static lg:translate-x-0',
           isHidden ? '-translate-x-full' : 'translate-x-0',
-          isExpanded ? 'w-72' : 'w-[70px]',
+          'w-[70px] hover:w-72',
         )}
       >
         <div className="no-scrollbar flex h-full flex-col overflow-y-auto overflow-x-hidden duration-300 ease-linear">
@@ -88,18 +73,15 @@ export function Sidebar({ isHidden, setIsHidden }: SidebarProps) {
             </button>
 
             <Link to="/dashboard">
-              {isExpanded ? (
-                <img src="/images/ante-logo.svg" width={80} height={28} alt="logo" />
-              ) : (
-                <img src="/images/ante-logo-single.svg" width={26} height={40} alt="logo" />
-              )}
+              <img src="/images/ante-logo.svg" width={80} height={28} alt="logo" className="hidden lg:block" />
+              <img src="/images/ante-logo-single.svg" width={26} height={40} alt="logo" className="block lg:hidden" />
             </Link>
           </div>
           <nav className="flex h-full flex-1 flex-col p-2">
             <div>
               <ul className="flex flex-col gap-2">
                 {sideBarData.map(({ name, path, icon }) => (
-                  <NavItem key={path} name={name} path={path} icon={icon} isExpanded={isExpanded} />
+                  <NavItem key={path} name={name} path={path} icon={icon} isExpanded={true} />
                 ))}
               </ul>
             </div>
@@ -107,10 +89,7 @@ export function Sidebar({ isHidden, setIsHidden }: SidebarProps) {
           <div className="px-2 py-5">
             <Button
               onClick={handleLogout}
-              className={cn(
-                'relative flex items-center justify-start rounded-md p-4 text-white/70 hover:text-white',
-                isExpanded ? 'w-full' : 'w-12',
-              )}
+              className="relative flex w-full items-center justify-start rounded-md p-4 text-white/70 hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -126,14 +105,7 @@ export function Sidebar({ isHidden, setIsHidden }: SidebarProps) {
                   d="m10.667 11.187 2.298-2.298H5.333a.889.889 0 1 1 0-1.778h7.632l-2.299-2.298a.889.889 0 0 1 1.258-1.257l3.816 3.816a.889.889 0 0 1 0 1.257l-3.816 3.816a.889.889 0 0 1-1.257-1.258Z"
                 />
               </svg>
-              <div
-                className={cn(
-                  'whitespace-nowrap capitalize',
-                  isExpanded ? 'visible ml-6 opacity-100' : 'invisible opacity-0',
-                )}
-              >
-                Log Out
-              </div>
+              <div className="ml-6 whitespace-nowrap capitalize">Log Out</div>
             </Button>
           </div>
         </div>
