@@ -10,14 +10,14 @@ type Params = {
 
 type TViewWarehousesResponse = {
     message: string;
-    data: TViewWarehouse[];
+    data: TViewWarehouse;
     currentPage: number;
     token: string;
 };
 
 export const fetchWarehouses = async (params: Params) => {
     try {
-        const { data } = await axios.get<TViewWarehousesResponse>(`/warehouse?page=1&perPage=10&createdById=${ACCOUNT_ID}`);
+        const { data } = await axios.get<TViewWarehousesResponse>(`/warehouse?page=1&perPage=10`);
         console.log(data);
         return data.data;
         
