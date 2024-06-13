@@ -17,8 +17,8 @@ type WarehouseCardProps = {
 
 export function WarehouseCard({ id }: WarehouseCardProps) {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['warehouses', { id }],
-    queryFn: () => fetchWarehouses({ page: 1, perPage: 10, createdById: id }),
+    queryKey: ['warehouses'],
+    queryFn: () => fetchWarehouses({ page: 1, perPage: 10 }),
   });
 
   if (isLoading) return <div>Loading...</div>;
