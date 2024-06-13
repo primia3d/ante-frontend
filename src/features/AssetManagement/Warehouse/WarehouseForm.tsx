@@ -10,6 +10,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { createWarehouse } from '@/api/warehouse/createWarehouse';
+import { useToast } from '@/components/Toaster';
+import { useMutation } from '@tanstack/react-query';
 
 export type WarehouseFormProps = {
   values?: TWarehouseFormSchema;
@@ -33,9 +36,32 @@ export function WarehouseForm({ values = defaultValues, variant, button, onSubmi
     defaultValues: values,
   });
 
+  const { toast } = useToast();
+  const createWarehouseMutation = useMutation({
+    mutationFn: createWarehouse,
+  });
+
   const handleSubmit = async (data: TWarehouseFormSchema) => {
     setIsFormOpen(false);
-    await onSubmit(data);
+    if (variant === 'create') {
+      try {
+        await createWarehouseMutation.mutateAsync({
+          name: data.warehouseName,
+          location: data.warehouseLocation,
+          size: data.warehouseSize,
+          storageCapacity: data.warehouseCapacity,
+        });
+        toast({
+          description: 'Warehouse successfully created!',
+          className: 'bg-green-700/70 text-white border border-green-500 rounded-none text-center',
+          duration: 3000,
+        });
+      } catch (error) {
+        console.error('Failed to create warehouse:', error);
+      }
+    } else {
+      await onSubmit(data);
+    }
   };
 
   useEffect(() => {
