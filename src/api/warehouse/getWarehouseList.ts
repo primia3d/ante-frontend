@@ -8,7 +8,7 @@ type Params = {
 
 type TViewWarehousesResponse = {
     message: string;
-    data: TViewWarehouse[];
+    data: TViewWarehouse;
     currentPage: number;
     token: string;
 };
