@@ -7,6 +7,8 @@ import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 import { warehouseViewAtom } from '../assetManagementAtom';
 import { WarehouseCard } from './WarehouseCard';
+import { fetchWarehouses } from '@/api/warehouse/getWarehouseList';
+import { useQuery } from '@tanstack/react-query';
 
 const warehouses = [
   {
@@ -35,6 +37,16 @@ const warehouses = [
 export function WarehouseContent() {
   const [warehouseView] = useAtom(warehouseViewAtom);
   const navigate = useNavigate();
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['warehouses'],
+    queryFn: () => fetchWarehouses({ page: 1, perPage: 10 }),
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching data</div>;
+
+  const warehouses = data || [];
 
   if (warehouseView === 'card') {
     return (

@@ -12,9 +12,9 @@ type WarehouseCardProps = {
   size: number;
 };
 
-export function WarehouseCard({ id, location, name, size }: WarehouseCardProps) {
+export function WarehouseCard({ id, name, location, size }: WarehouseCardProps) {
   return (
-    <li className="">
+    <li key={id} className="">
       <Card className="relative border-none shadow-none transition duration-300 hover:-translate-y-[10px] hover:cursor-pointer hover:shadow">
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="absolute right-3 top-3 h-7 w-7 rounded-full hover:bg-custom-100">
@@ -22,7 +22,7 @@ export function WarehouseCard({ id, location, name, size }: WarehouseCardProps) 
               <EllipsisIcon className="h-5 w-5 text-custom-200" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="">
+          <DropdownMenuContent>
             <DropdownMenuItem>Action A</DropdownMenuItem>
             <DropdownMenuItem>Action B</DropdownMenuItem>
           </DropdownMenuContent>
