@@ -1,3 +1,4 @@
+import { getSearchWarehouseByKey } from '@/api/warehouse/getSearchWarehouseByKey';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/Tabs';
@@ -12,10 +13,12 @@ import {
 import { CustomIcon } from '@/features/CustomIcon';
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
-
+import { useState } from 'react';
 export default function AssetManagementPage() {
   const { toast } = useToast();
   const [tab, setTab] = useAtom(assetManagementTabAtom);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const onTabChange = (value: string) => {
     setTab(value);
@@ -34,6 +37,19 @@ export default function AssetManagementPage() {
         className: 'bg-red-700/70 text-white border border-green-500 rounded-none text-center',
         duration: 3000,
       });
+    }
+  };
+
+  const handleSearch = async (searchText: string) => {
+    setSearchKeyword(searchText);
+    try {
+      const {
+        data: { list: warehouseData = [] },
+      } = await getSearchWarehouseByKey({ page: 1, perPage: 50, sortType: 'asc', search: searchText });
+      let dataList = warehouseData.map((warehouse) => warehouse.name);
+      setSuggestions(dataList);
+    } catch (error) {
+      console.log('Search Failed', error);
     }
   };
 
@@ -57,9 +73,18 @@ export default function AssetManagementPage() {
             <Input
               type="text"
               placeholder="Search..."
+              value={searchKeyword}
+              onChange={(e) => handleSearch(e.target.value)}
               className="h-9 min-w-52 rounded border bg-white placeholder:font-semibold placeholder:text-custom-200 lg:min-w-72"
             />
             <CustomIcon variant="search" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-custom-200" />
+            <div className="absolute z-10 mt-1 max-h-32 w-full overflow-y-auto rounded bg-white shadow-md">
+              {suggestions.map((suggestion, index) => (
+                <div key={index} className="cursor-pointer px-4 py-2 hover:bg-gray-100">
+                  {suggestion}
+                </div>
+              ))}
+            </div>
           </div>
 
           <TabsContent value="purchasing" className="mt-0 w-full">
