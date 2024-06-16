@@ -36,6 +36,8 @@ export function WarehouseContent() {
   const [warehouseView] = useAtom(warehouseViewAtom);
   const navigate = useNavigate();
 
+  //USE QUERY HERE
+
   if (warehouseView === 'card') {
     return (
       <ul className="grid h-full auto-rows-min grid-cols-[repeat(auto-fill,minmax(100%,1fr))] gap-5 xs:grid-cols-[repeat(auto-fill,minmax(360px,1fr))]">

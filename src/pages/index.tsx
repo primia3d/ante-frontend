@@ -19,6 +19,7 @@ import { IS_LOGGED_IN } from '@/constants/common';
 import { RootLayout } from '@/layouts/RootLayout';
 import { SettingsLayout } from '@/layouts/SettingsLayout';
 import Inventory from './home/asset-management/Inventory';
+import Workflow from './home/settings/workflow';
 
 const authRouter: RouteObject[] = [
   {
@@ -97,6 +98,10 @@ const homeRouter: RouteObject[] = [
           {
             path: '/settings/user-org-chart',
             element: <UserOrgChart />,
+          },
+          {
+            path: '/settings/workflow',
+            element: <Workflow />,
           },
         ],
       },
