@@ -45,6 +45,10 @@ export function SettingsLayout() {
       path: '/settings/user-org-chart',
       title: 'User Org Chart',
     },
+    {
+      path: '/settings/workflow',
+      title: 'Workflow',
+    },
   ].filter(Boolean);
 
   return (

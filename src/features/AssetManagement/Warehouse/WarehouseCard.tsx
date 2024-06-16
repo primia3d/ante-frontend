@@ -14,7 +14,7 @@ type WarehouseCardProps = {
 
 export function WarehouseCard({ id, name, location, size }: WarehouseCardProps) {
   return (
-    <li key={id} className="">
+    <li>
       <Card className="relative border-none shadow-none transition duration-300 hover:-translate-y-[10px] hover:cursor-pointer hover:shadow">
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="absolute right-3 top-3 h-7 w-7 rounded-full hover:bg-custom-100">

@@ -1,8 +1,8 @@
-import { TViewWarehouse } from "./warehouseList";
+import { TViewWarehouse } from './warehouseList';
 
 export type TSearchWarehouse = {
-    message: string;
-    data: {
-        list:TViewWarehouse[]
-    };
+  message: string;
+  data: {
+    list: TViewWarehouse[];
+  };
 };
