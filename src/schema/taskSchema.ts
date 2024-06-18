@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const taskFormSchema = z.object({
@@ -12,7 +13,7 @@ export const taskFormSchema = z.object({
     .min(1, {
       message: 'Task title is required.',
     })
-    .max(20, {
+    .max(50, {
       message: 'Task title must not be longer than 50 characters.',
     }),
   description: z
@@ -20,7 +21,7 @@ export const taskFormSchema = z.object({
     .min(1, {
       message: 'Description is required.',
     })
-    .max(200, {
+    .max(2000, {
       message: 'Description must not be longer than 200 characters.',
     }),
   dueDate: z.date({
