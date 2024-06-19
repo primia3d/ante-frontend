@@ -45,7 +45,11 @@ export const RoleColumns: ColumnDef<TRole>[] = [
     cell: ({ getValue }) => {
       const description = getValue<TRole['description']>();
 
-      return <Description description={description} />;
+      return (
+        <div className="max-w-sm truncate">
+          <Description description={description} />
+        </div>
+      );
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
