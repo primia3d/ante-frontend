@@ -11,7 +11,7 @@ import { cn } from '@/utils/cn';
 export function Step2() {
   const form = useFormContext<TUserFormSchema>();
   const { data: { list: roles = [] } = {} } = useQuery({
-    enabled: false,
+    enabled: true,
     queryKey: ['getRoleList'],
     queryFn: () => getRoleList(),
   });
@@ -106,9 +106,9 @@ export function Step2() {
                     </div>
                   </FormControl>
                   <SelectContent className="z-[60]">
-                    {roles.map(({ id, description }) => (
+                    {roles.map(({ id, name }) => (
                       <SelectItem key={id} value={id}>
-                        {description}
+                        {name}
                       </SelectItem>
                     ))}
                   </SelectContent>
