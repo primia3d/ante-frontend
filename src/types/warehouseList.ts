@@ -8,4 +8,5 @@ export type TViewWarehouse = {
   name: string;
   location: string; 
   size: number;
+  capacity: number;
 };

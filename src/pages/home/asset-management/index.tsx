@@ -14,7 +14,6 @@ import { CustomIcon } from '@/features/CustomIcon';
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import { getSearchWarehouseByKey } from '@/api/warehouse/getSearchWarehouseByKey';
-import { TViewWarehouse } from '@/types/warehouseList';
 export default function AssetManagementPage() {
   const { toast } = useToast();
   const [tab, setTab] = useAtom(assetManagementTabAtom);

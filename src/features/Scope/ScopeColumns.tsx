@@ -6,14 +6,14 @@ import { DataTableColumnHeader } from '@/components/DataTable/DataTableColumnHea
 import { TScope } from '@/types/scope';
 
 export const ScopeColumns: ColumnDef<TScope>[] = [
-  {
-    accessorKey: 'id',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
-    cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue<TScope['id']>()}</div>,
-    meta: {
-      className: 'max-w-[10rem]',
-    },
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
+  //   cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue<TScope['id']>()}</div>,
+  //   meta: {
+  //     className: 'max-w-[10rem]',
+  //   },
+  // },
   {
     accessorKey: 'name',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,

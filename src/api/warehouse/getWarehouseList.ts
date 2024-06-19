@@ -8,14 +8,16 @@ type Params = {
 
 type TViewWarehousesResponse = {
     message: string;
-    data: TViewWarehouse;
+    data: TViewWarehouse[];
     currentPage: number;
     token: string;
 };
 
-export const fetchWarehouses = async (params: Params) => {
+export const fetchWarehouses = async (params: Params): Promise<TViewWarehouse[]> => {
     try {
-        const { data } = await axios.get<TViewWarehousesResponse>(`/warehouse?page=1&perPage=10`);
+        const { data } = await axios.get<TViewWarehousesResponse>(`/warehouse`, {
+            params: { page: params.page, perPage: params.perPage }
+        });
         console.log(data);
         return data.data;
         

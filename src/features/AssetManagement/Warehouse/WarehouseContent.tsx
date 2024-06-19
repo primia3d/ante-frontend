@@ -9,36 +9,13 @@ import { warehouseViewAtom } from '../assetManagementAtom';
 import { WarehouseCard } from './WarehouseCard';
 import { fetchWarehouses } from '@/api/warehouse/getWarehouseList';
 import { useQuery } from '@tanstack/react-query';
-
-const warehouses = [
-  {
-    id: '01',
-    name: 'Main Warehouse',
-    location: '123 Main St., Makati City',
-    size: 929,
-    capacity: 10000,
-  },
-  {
-    id: '02',
-    name: 'Satellite Warehouse 1',
-    location: '456 Sub St., Taguig City',
-    size: 500,
-    capacity: 10000,
-  },
-  {
-    id: '03',
-    name: 'Satellite Warehouse 2',
-    location: '789 Sub St., Paranaque City',
-    size: 450,
-    capacity: 10000,
-  },
-];
+import { TViewWarehouse } from '@/types/warehouseList';
 
 export function WarehouseContent() {
   const [warehouseView] = useAtom(warehouseViewAtom);
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<TViewWarehouse[]>({
     queryKey: ['warehouses'],
     queryFn: () => fetchWarehouses({ page: 1, perPage: 10 }),
   });
@@ -47,6 +24,8 @@ export function WarehouseContent() {
   if (isError) return <div>Error fetching data</div>;
 
   const warehouses = data || [];
+
+  if (!Array.isArray(warehouses)) return <div>Unexpected data format</div>;
 
   if (warehouseView === 'card') {
     return (

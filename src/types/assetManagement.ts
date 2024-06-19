@@ -13,11 +13,12 @@ export type TWarehouse = {
 export type TInventory = {
   id: string;
   itemNumber: number;
-  description: string;
+  variationName: string;
+  variationDescription: string;
   stocks: number;
-  uom: string;
+  unitOfMeasure: string;
   unitPrice: number;
-  totalCost: number;
+  total: number;
   location: string;
 };
 
