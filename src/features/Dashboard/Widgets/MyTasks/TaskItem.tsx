@@ -15,9 +15,12 @@ type TaskItemProps = {
   formattedDueDate: string;
   dueDate: string;
   startDate: string;
+  createdBy: string;  
+  boardLane: string;  
+  timeAgo: string;
 };
 
-export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead, title, description }: TaskItemProps) {
+export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead, title, description, createdBy, boardLane, timeAgo }: TaskItemProps) {
   const { value: isTaskItemOpen, set: setIsTaskItemOpen } = useBoolean(false);
 
   return (
@@ -70,10 +73,10 @@ export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead,
           </h3>
           <section>
             <h1 className="text-lg font-bold">{title}</h1>
-            <p className="text-custom-300">Costing/ Bill of Quantity</p>
+            <p className="text-custom-300">{boardLane}</p>
+            <div className="flex w-full items-center after:mt-0.5 after:flex-1 after:border-t after:border-custom-200 mb-4"></div> 
             <div className="my-4 flex items-center gap-2">
               {isDone && <Badge variant="primary">Marked as Done</Badge>}
-              <Badge variant="primary">Urgent</Badge>
             </div>
           </section>
           <p className="mb-8 text-pretty text-custom-300">{description}</p>
@@ -97,8 +100,8 @@ export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead,
               <div className="h-9 w-9 overflow-hidden rounded-full">
                 <img src="/images/person02.webp" alt="" className="h-full w-full object-cover" />
               </div>
-              <p className="font-bold">Juan Dela Cruz</p>
-              <p className="ml-auto text-custom-300">3 minutes ago</p>
+              <p className="font-bold">{createdBy}</p>
+              <p className="ml-auto text-custom-300">{timeAgo}</p>
             </div>
           </section>
         </div>

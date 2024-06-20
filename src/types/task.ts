@@ -46,6 +46,13 @@ export type TTask = {
     dateFull: string;
     raw: string;
   };
+  createdBy: {
+    name: string;
+  };
+  boardLane: {
+    name: string;
+  };
+  timeAgo: string;
 };
 
 export type TAssigneeUser = {

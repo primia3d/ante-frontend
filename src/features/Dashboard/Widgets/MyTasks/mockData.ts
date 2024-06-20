@@ -7,6 +7,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: false,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Jane Smith' },
+    boardLane: { name: 'Backlog' },
+    timeAgo: '1 month ago',
   },
   {
     id: 2,
@@ -16,6 +19,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: false,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'John Doe' },
+    boardLane: { name: 'In progress' },
+    timeAgo: '2 days ago',
   },
   {
     id: 3,
@@ -25,6 +31,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: false,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Vince Carter' },
+    boardLane: { name: 'Backlog' },
+    timeAgo: '4 days ago',
   },
   {
     id: 4,
@@ -34,6 +43,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: false,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Bryan James' },
+    boardLane: { name: 'Backlog' },
+    timeAgo: '2 days ago',
   },
   {
     id: 5,
@@ -43,6 +55,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: true,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Dirk Williams' },
+    boardLane: { name: 'Backlog' },
+    timeAgo: '2 days ago',
   },
   {
     id: 6,
@@ -52,6 +67,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: true,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Derron Cain' },
+    boardLane: { name: 'Backlog' },
+    timeAgo: '12 days ago',
   },
   {
     id: 7,
@@ -61,6 +79,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: true,
     isRead: true,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Larry Legend' },
+    boardLane: { name: 'Done' },
+    timeAgo: '8 days ago',
   },
   {
     id: 8,
@@ -70,6 +91,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: true,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Marian Sharpe' },
+    boardLane: { name: 'Backlog' },
+    timeAgo: '20 days ago',
   },
   {
     id: 9,
@@ -79,6 +103,9 @@ export const TASK_WIDGET_DATA = [
     isPastDue: false,
     isRead: true,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Allen Miranda' },
+    boardLane: { name: 'In Progress' },
+    timeAgo: '10 days ago',
   },
   {
     id: 10,
@@ -88,5 +115,8 @@ export const TASK_WIDGET_DATA = [
     isPastDue: true,
     isRead: true,
     description: 'Lorem ipsum dpsum dolor sit amet, consectetur adipiscing.',
+    createdBy: { name: 'Pau Pascual' },
+    boardLane: { name: 'Backlog' },
+    timeAgo: '10 days ago',
   },
 ];
