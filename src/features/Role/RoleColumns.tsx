@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { ColumnDef } from '@tanstack/react-table';
-import { Trash2 } from 'lucide-react';
-import { useAtom } from 'jotai';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { ColumnDef } from '@tanstack/react-table';
+import { useAtom } from 'jotai';
+import { Trash2 } from 'lucide-react';
 
 import Description from '../Scope/Description';
 
-import ViewRole from './ViewRole';
 import { RoleForm, RoleFormProps } from './RoleForm';
+import ViewRole from './ViewRole';
 import { roleCurrentPageAtom, rolePageSizeAtom } from './roleAtom';
 
-import { DataTableColumnHeader } from '@/components/DataTable/DataTableColumnHeader';
+import { deleteRole, getRoleList, updateRole } from '@/api/role';
+import { getCurrentUser } from '@/api/user';
 import { ConfirmDialog } from '@/components/ConfirmDialog/ConfirmDialog';
+import { DataTableColumnHeader } from '@/components/DataTable/DataTableColumnHeader';
 import { useToast } from '@/components/Toaster/useToast';
 import { TRole } from '@/types/role';
-import { getCurrentUser } from '@/api/user';
-import { deleteRole, getRoleList, updateRole } from '@/api/role';
 
 export const RoleColumns: ColumnDef<TRole>[] = [
   // {
@@ -82,9 +82,9 @@ export const RoleColumns: ColumnDef<TRole>[] = [
         queryFn: getCurrentUser,
       });
 
-      const hasViewRole = currentUser?.roleAccess.some((accessID) => accessID === 'VIEW_ROLE');
-      const hasUpdateRole = currentUser?.roleAccess.some((accessID) => accessID === 'UPDATE_ROLE');
-      const hasDeleteRole = currentUser?.roleAccess.some((accessID) => accessID === 'DELETE_ROLE');
+      const hasViewRole = currentUser?.roleAccess?.some((accessID) => accessID === 'VIEW_ROLE');
+      const hasUpdateRole = currentUser?.roleAccess?.some((accessID) => accessID === 'UPDATE_ROLE');
+      const hasDeleteRole = currentUser?.roleAccess?.some((accessID) => accessID === 'DELETE_ROLE');
 
       const { refetch } = useQuery({
         enabled: false,

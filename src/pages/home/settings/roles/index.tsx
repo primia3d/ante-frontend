@@ -32,7 +32,7 @@ export default function RoleManagement() {
     queryFn: getCurrentUser,
   });
 
-  const hasCreateRole = currentUser?.roleAccess.some((accessID) => accessID === 'CREATE_ROLE');
+  const hasCreateRole = currentUser?.roleAccess?.some((accessID) => accessID === 'CREATE_ROLE');
 
   const {
     data: { list: roles = [], pagination = [] } = {},

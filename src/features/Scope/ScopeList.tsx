@@ -31,19 +31,16 @@ export function ScopeList({ scopes, field, depth = 0 }: ScopeListProps) {
 }
 
 function ScopeItem({ scope, field, depth = 0 }: ScopeItemProps) {
+  const isChecked = field.value?.includes(scope.id);
+
+  const handleChange = (checked: boolean) => {
+    field.onChange(checked ? [...field.value, scope.id] : field.value?.filter((value) => value !== scope.id));
+  };
+
   return (
     <li className={`${depth > 0 ? 'ml-4' : ''}`} value={scope.id}>
-      <div className="flex gap-2">
-        <div className="flex items-center">
-          <Checkbox
-            checked={field.value?.includes(scope.id)}
-            onCheckedChange={(checked: boolean) => {
-              return checked
-                ? field.onChange([...field.value, scope.id])
-                : field.onChange(field.value?.filter((value) => value !== scope.id));
-            }}
-          />
-        </div>
+      <div className="flex items-center gap-2">
+        <Checkbox checked={isChecked} onCheckedChange={handleChange} />
         <span>{scope.name}</span>
       </div>
       {scope.child && scope.child.length > 0 && <ScopeList scopes={scope.child} field={field} depth={depth + 1} />}

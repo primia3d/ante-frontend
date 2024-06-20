@@ -35,7 +35,7 @@ export default function Users() {
     queryFn: getCurrentUser,
   });
 
-  const hasCreateUsers = currentUser?.roleAccess.some((accessID) => accessID === 'CREATE_USERS');
+  const hasCreateUsers = currentUser?.roleAccess?.some((accessID) => accessID === 'CREATE_USERS');
 
   const handleSubmit: UserFormProps['onSubmit'] = async (values) => {
     try {

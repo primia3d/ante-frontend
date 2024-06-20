@@ -43,12 +43,12 @@ export function useSideBarData() {
     },
   };
 
-  const hasProjectsPage = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'PROJECTS_PAGE');
-  const hasAssetsPage = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'ASSETS_MANAGEMENT_PAGE');
-  const hasManpowerPage = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'MANPOWER_PAGE');
-  const hasTreasuryPage = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'TREASURY_PAGE');
-  const hasLeadsPage = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'LEADS_PAGE');
-  const hasSettingsPage = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'SETTINGS_PAGE');
+  const hasProjectsPage = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'PROJECTS_PAGE');
+  const hasAssetsPage = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'ASSETS_MANAGEMENT_PAGE');
+  const hasManpowerPage = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'MANPOWER_PAGE');
+  const hasTreasuryPage = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'TREASURY_PAGE');
+  const hasLeadsPage = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'LEADS_PAGE');
+  const hasSettingsPage = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'SETTINGS_PAGE');
 
   const routes: FalsyRoutes = [
     {

@@ -64,7 +64,7 @@ export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead,
             {!isDone && (
               <>
                 <CustomIcon variant="newTask" className="text-primary-100" />
-                New Task
+                Task Information
               </>
             )}
           </h3>
