@@ -17,13 +17,13 @@ import { deleteUser, getCurrentUser, updateUser, getUserList } from '@/api/user'
 const columnHelper = createColumnHelper<TUser>();
 
 export const UserColumns = [
-  columnHelper.accessor('id', {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
-    cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue()}</div>,
-    meta: {
-      className: 'max-w-[10rem]',
-    },
-  }),
+  // columnHelper.accessor('id', {
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
+  //   cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue()}</div>,
+  //   meta: {
+  //     className: 'max-w-[10rem]',
+  //   },
+  // }),
   columnHelper.accessor('firstName', {
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
     cell: ({ row }) => {
@@ -61,30 +61,30 @@ export const UserColumns = [
       className: 'min-w-[14rem]',
     },
   }),
-  columnHelper.accessor('email', {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
-    cell: ({ getValue }) => {
-      return <div>{getValue()}</div>;
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-    meta: {
-      className: 'min-w-[14rem]',
-    },
-  }),
-  columnHelper.accessor('contactNumber', {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Contact No." />,
-    cell: ({ getValue }) => {
-      return <div>{getValue<TUser['contactNumber']>()}</div>;
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-    meta: {
-      className: 'min-w-[14rem]',
-    },
-  }),
+  // columnHelper.accessor('email', {
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
+  //   cell: ({ getValue }) => {
+  //     return <div>{getValue()}</div>;
+  //   },
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  //   meta: {
+  //     className: 'min-w-[14rem]',
+  //   },
+  // }),
+  // columnHelper.accessor('contactNumber', {
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Contact No." />,
+  //   cell: ({ getValue }) => {
+  //     return <div>{getValue<TUser['contactNumber']>()}</div>;
+  //   },
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  //   meta: {
+  //     className: 'min-w-[14rem]',
+  //   },
+  // }),
   // columnHelper.accessor('address', {
   //   header: ({ column }) => <DataTableColumnHeader column={column} title="Address" />,
   //   cell: ({ getValue }) => {

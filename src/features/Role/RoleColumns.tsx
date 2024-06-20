@@ -18,14 +18,14 @@ import { getCurrentUser } from '@/api/user';
 import { deleteRole, getRoleList, updateRole } from '@/api/role';
 
 export const RoleColumns: ColumnDef<TRole>[] = [
-  {
-    accessorKey: 'id',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
-    cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue<TRole['id']>()}</div>,
-    meta: {
-      className: 'max-w-[10rem]',
-    },
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
+  //   cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue<TRole['id']>()}</div>,
+  //   meta: {
+  //     className: 'max-w-[10rem]',
+  //   },
+  // },
   {
     accessorKey: 'name',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
@@ -45,7 +45,11 @@ export const RoleColumns: ColumnDef<TRole>[] = [
     cell: ({ getValue }) => {
       const description = getValue<TRole['description']>();
 
-      return <Description description={description} />;
+      return (
+        <div className="max-w-sm truncate">
+          <Description description={description} />
+        </div>
+      );
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
