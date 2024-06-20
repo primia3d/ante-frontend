@@ -10,6 +10,7 @@ import { getRoleByGroup } from '@/api/role/getRoleByGroup';
 import { getRoleGroupDropdownList } from '@/api/roleGroup/getRoleGroupDropdownList';
 import { getScopeTreeByRole } from '@/api/scope/getScopeTreeByRole';
 import { Button } from '@/components/Button';
+import { Checkbox } from '@/components/Checkbox';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/Dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/Form';
@@ -18,6 +19,7 @@ import { Textarea } from '@/components/Textarea';
 import { useBoolean } from '@/hooks/useBoolean';
 import { roleFormSchema } from '@/schema/roleSchema';
 import { TRoleFormSchema } from '@/types/role';
+import { TScopeTree } from '@/types/scope';
 import { cn } from '@/utils/cn';
 
 export type RoleFormProps = {
@@ -70,6 +72,7 @@ export function RoleForm({ variant, onSubmit, values = defaultValues, parentRole
   const { value: isFormOpen, set: setIsFormOpen } = useBoolean(false);
   const [roleGroupIdValue, setRoleGroupIdValue] = useState(roleGroupId || '');
   const [roleParentIdValue, setRoleParentIdValue] = useState(parentRoleId || '');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (isFormOpen) {
@@ -99,6 +102,45 @@ export function RoleForm({ variant, onSubmit, values = defaultValues, parentRole
     defaultValues: values,
   });
 
+  const filterScopesByQuery = (scopes: TScopeTree[], query: string): TScopeTree[] => {
+    return scopes
+      .map((scope) => {
+        if (scope.name.toLowerCase().includes(query.toLowerCase())) {
+          return scope;
+        }
+
+        if (scope.child) {
+          const filteredChildren = filterScopesByQuery(scope.child, query);
+          if (filteredChildren.length > 0) {
+            return {
+              ...scope,
+              child: filteredChildren,
+            };
+          }
+        }
+
+        return null;
+      })
+      .filter((scope) => scope !== null);
+  };
+
+  const filteredScopeByRoleData = filterScopesByQuery(scopeByRoleData || [], searchQuery);
+
+  const collectAllScopeIds = (scopes: TScopeTree[]): string[] => {
+    let allIds: string[] = [];
+
+    scopes.forEach((scope) => {
+      allIds.push(scope.id);
+      if (scope.child) {
+        allIds = allIds.concat(collectAllScopeIds(scope.child));
+      }
+    });
+
+    return allIds;
+  };
+
+  const allScopeIds = collectAllScopeIds(filteredScopeByRoleData);
+
   const handleSubmit = async (data: typeof values) => {
     setIsFormOpen(false);
     await onSubmit(data);
@@ -116,7 +158,7 @@ export function RoleForm({ variant, onSubmit, values = defaultValues, parentRole
   return (
     <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
       <DialogTrigger asChild>{renderButton(variant)}</DialogTrigger>
-      <DialogContent className="overflow-y-auto rounded-xl border-none bg-white text-[13px] sm:max-w-xl">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto rounded-xl border-none bg-white text-[13px] sm:max-w-7xl">
         <DialogHeader className="flex flex-row items-center justify-between border-b px-4 py-2">
           <DialogTitle>
             {variant === 'create' && <>Create Role</>}
@@ -135,189 +177,206 @@ export function RoleForm({ variant, onSubmit, values = defaultValues, parentRole
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 p-5 sm:p-8">
-            <section>
-              <h3 className="mb-5 text-base font-semibold">Details</h3>
-              <div className="flex flex-col items-center gap-5 sm:flex-row">
-                <div className="flex h-full w-full flex-col justify-between gap-5">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <FormLabel
-                              className={cn(
-                                'font-bold capitalize leading-7 text-custom-300',
-                                form.formState.errors.name && 'text-rose-500',
-                              )}
-                            >
-                              Name
-                            </FormLabel>
-                            <Input
-                              placeholder="Name"
-                              className={cn(
-                                'h-11 rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200',
-                                form.formState.errors.name && 'border-rose-500',
-                              )}
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-10">
+              <section>
+                <h3 className="mb-5 text-base font-semibold">Details</h3>
+                <div className="flex flex-col items-center gap-5 sm:flex-row">
+                  <div className="flex h-full w-full flex-col justify-between gap-5">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <FormLabel
+                                className={cn(
+                                  'font-bold capitalize leading-7 text-custom-300',
+                                  form.formState.errors.name && 'text-rose-500',
+                                )}
+                              >
+                                Name
+                              </FormLabel>
+                              <Input
+                                placeholder="Name"
+                                className={cn(
+                                  'h-11 rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200',
+                                  form.formState.errors.name && 'border-rose-500',
+                                )}
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <FormLabel
-                              className={cn(
-                                'font-bold capitalize leading-7 text-custom-300',
-                                form.formState.errors.description && 'text-rose-500',
-                              )}
-                            >
-                              Description
-                            </FormLabel>
-                            <Textarea
-                              placeholder="Description"
-                              className={cn(
-                                'w-full resize-none rounded-lg border-2 border-custom-100 bg-custom-50 p-3 placeholder:text-custom-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
-                                form.formState.errors.description && 'border-rose-500',
-                              )}
-                              cols={1}
-                              rows={5}
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="roleGroupId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <FormLabel
-                              className={cn(
-                                'font-bold capitalize leading-7 text-custom-300',
-                                form.formState.errors.roleGroupId && 'text-rose-500',
-                              )}
-                            >
-                              Role Group
-                            </FormLabel>
-                            <div className="mt-2">
-                              <select
-                                value={field.value}
-                                onChange={(e) => {
-                                  const { value } = e.target;
-                                  field.onChange(value);
-                                  setRoleGroupIdValue(value);
-                                }}
-                                className="h-11 w-full rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                disabled={!!roleGroupId}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <FormLabel
+                                className={cn(
+                                  'font-bold capitalize leading-7 text-custom-300',
+                                  form.formState.errors.description && 'text-rose-500',
+                                )}
                               >
-                                <option value="" disabled>
-                                  Select a Role Group
-                                </option>
-                                {roleGroupDropdownList.map((roleGroup) => (
-                                  <option key={roleGroup.id} value={roleGroup.id}>
-                                    {roleGroup.name}
-                                  </option>
-                                ))}
-                              </select>
+                                Description
+                              </FormLabel>
+                              <Textarea
+                                placeholder="Description"
+                                className={cn(
+                                  'w-full resize-none rounded-lg border-2 border-custom-100 bg-custom-50 p-3 placeholder:text-custom-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+                                  form.formState.errors.description && 'border-rose-500',
+                                )}
+                                cols={1}
+                                rows={5}
+                                {...field}
+                              />
                             </div>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="roleGroupId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <FormLabel
+                                className={cn(
+                                  'font-bold capitalize leading-7 text-custom-300',
+                                  form.formState.errors.roleGroupId && 'text-rose-500',
+                                )}
+                              >
+                                Role Group
+                              </FormLabel>
+                              <div className="mt-2">
+                                <select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const { value } = e.target;
+                                    field.onChange(value);
+                                    setRoleGroupIdValue(value);
+                                  }}
+                                  className="h-11 w-full rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                  disabled={!!roleGroupId}
+                                >
+                                  <option value="" disabled>
+                                    Select a Role Group
+                                  </option>
+                                  {roleGroupDropdownList.map((roleGroup) => (
+                                    <option key={roleGroup.id} value={roleGroup.id}>
+                                      {roleGroup.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="parentRoleId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <FormLabel
+                                className={cn(
+                                  'font-bold capitalize leading-7 text-custom-300',
+                                  form.formState.errors.parentRoleId && 'text-rose-500',
+                                )}
+                              >
+                                Role Parent
+                              </FormLabel>
+                              <div className="mt-2">
+                                <select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const { value } = e.target;
+                                    field.onChange(value);
+                                    setRoleParentIdValue(value);
+                                  }}
+                                  className="h-11 w-full rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                  disabled={
+                                    !roleGroupIdValue || !roleByGroupData || !roleByGroupData.length || !!parentRoleId
+                                  }
+                                >
+                                  <option value="" disabled>
+                                    Select a Parent Role
+                                  </option>
+                                  {roleByGroupData?.map((role) => (
+                                    <option key={role.id} value={role.id}>
+                                      {role.name}
+                                    </option>
+                                  ))}
+                                </select>
+                                {!roleByGroupData ||
+                                  (roleByGroupData.length === 0 && (
+                                    <div className="text-center text-custom-300">
+                                      No Roles Available for this Role Group
+                                    </div>
+                                  ))}
+                              </div>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              </section>
+              <section>
+                <h3 className="mb-5 text-base font-semibold">Access</h3>
+                <div className="space-y-5 rounded-md border p-5">
+                  <div className="relative w-full">
+                    <Input
+                      placeholder="Search..."
+                      className="h-9 w-full bg-white pl-8"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.currentTarget.value)}
+                    />
+                    <SearchIcon className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                  </div>
                   <FormField
                     control={form.control}
-                    name="parentRoleId"
+                    name="scopeIDs"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <FormLabel
-                              className={cn(
-                                'font-bold capitalize leading-7 text-custom-300',
-                                form.formState.errors.parentRoleId && 'text-rose-500',
-                              )}
-                            >
-                              Role Parent
-                            </FormLabel>
-                            <div className="mt-2">
-                              <select
-                                value={field.value}
-                                onChange={(e) => {
-                                  const { value } = e.target;
-                                  field.onChange(value);
-                                  setRoleParentIdValue(value);
+                      <FormItem className="max-h-[400px] overflow-auto sm:max-w-full [&>*]:truncate">
+                        {!!filteredScopeByRoleData.length && (
+                          <>
+                            <div className="mb-2 flex items-center gap-2">
+                              <Checkbox
+                                checked={field.value.length === allScopeIds.length}
+                                onCheckedChange={(checked: boolean) => {
+                                  field.onChange(checked ? allScopeIds : []);
                                 }}
-                                className="h-11 w-full rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                disabled={
-                                  !roleGroupIdValue || !roleByGroupData || !roleByGroupData.length || !!parentRoleId
-                                }
-                              >
-                                <option value="" disabled>
-                                  Select a Parent Role
-                                </option>
-                                {roleByGroupData?.map((role) => (
-                                  <option key={role.id} value={role.id}>
-                                    {role.name}
-                                  </option>
-                                ))}
-                              </select>
-                              {!roleByGroupData ||
-                                (roleByGroupData.length === 0 && (
-                                  <div className="text-center text-custom-300">
-                                    No Roles Available for this Role Group
-                                  </div>
-                                ))}
+                              />
+                              <span>Select All</span>
                             </div>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
+                            <ScopeList scopes={filteredScopeByRoleData} field={field} />
+                          </>
+                        )}
+                        {!filteredScopeByRoleData.length && <p>No scope found.</p>}
                       </FormItem>
                     )}
                   />
                 </div>
-              </div>
-            </section>
-            <section>
-              <h3 className="mb-5 text-base font-semibold">Access</h3>
-              <div className="space-y-5 rounded-md border p-5">
-                <div className="relative w-full">
-                  <Input
-                    placeholder="Search..."
-                    className="h-9 w-full bg-white pl-8"
-                    // onChange={(event) => setSearch(event.currentTarget.value)}
-                  />
-                  <SearchIcon className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="scopeIDs"
-                  render={({ field }) => (
-                    <FormItem className="max-h-[300px] max-w-xs overflow-auto sm:max-w-full [&>*]:truncate">
-                      <ScopeList scopes={scopeByRoleData} field={field} />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </section>
-            <div className="flex items-center justify-center gap-2">
+              </section>
+            </div>
+            <div className="flex items-center justify-center gap-2 sm:justify-end">
               <ConfirmDialog
                 title="Role"
                 message={
@@ -328,7 +387,7 @@ export function RoleForm({ variant, onSubmit, values = defaultValues, parentRole
                 label="Cancel"
                 type="cancel"
                 handleReset={() => setIsFormOpen(false)}
-                className="w-full"
+                className="w-full sm:w-1/5"
               />
               <ConfirmDialog
                 title="Role"
@@ -340,7 +399,7 @@ export function RoleForm({ variant, onSubmit, values = defaultValues, parentRole
                 label={variant === 'create' ? 'Create' : 'Save'}
                 type="submit"
                 handleSubmit={form.handleSubmit(handleSubmit)}
-                className="w-full bg-primary-100 hover:bg-blue-600"
+                className="w-full bg-primary-100 hover:bg-blue-600 sm:w-1/5"
               />
             </div>
           </form>

@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { ColumnDef } from '@tanstack/react-table';
-import { Trash2 } from 'lucide-react';
-import { useAtom } from 'jotai';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { ColumnDef } from '@tanstack/react-table';
+import { useAtom } from 'jotai';
+import { Trash2 } from 'lucide-react';
 
 import Description from '../Scope/Description';
 
-import ViewRoleGroup from './ViewRoleGroup';
 import { RoleGroupForm, RoleGroupFormProps } from './RoleGroupForm';
+import ViewRoleGroup from './ViewRoleGroup';
 import { roleGroupCurrentPageAtom, roleGroupPageSizeAtom } from './roleGroupAtom';
 
-import { DataTableColumnHeader } from '@/components/DataTable/DataTableColumnHeader';
+import { deleteRoleGroup, getRoleGroupList, updateRoleGroup } from '@/api/roleGroup';
+import { getCurrentUser } from '@/api/user';
 import { ConfirmDialog } from '@/components/ConfirmDialog/ConfirmDialog';
+import { DataTableColumnHeader } from '@/components/DataTable/DataTableColumnHeader';
 import { useToast } from '@/components/Toaster/useToast';
 import { TRoleGroup } from '@/types/roleGroup';
-import { getCurrentUser } from '@/api/user';
-import { deleteRoleGroup, getRoleGroupList, updateRoleGroup } from '@/api/roleGroup';
 
 export const RoleGroupColumns: ColumnDef<TRoleGroup>[] = [
   // {
@@ -82,9 +82,9 @@ export const RoleGroupColumns: ColumnDef<TRoleGroup>[] = [
         queryFn: getCurrentUser,
       });
 
-      const hasViewRoleGroup = currentUser?.roleAccess.some((accessID) => accessID === 'VIEW_ROLE_GROUP');
-      const hasUpdateRoleGroup = currentUser?.roleAccess.some((accessID) => accessID === 'UPDATE_ROLE_GROUP');
-      const hasDeleteRoleGroup = currentUser?.roleAccess.some((accessID) => accessID === 'DELETE_ROLE_GROUP');
+      const hasViewRoleGroup = currentUser?.roleAccess?.some((accessID) => accessID === 'VIEW_ROLE_GROUP');
+      const hasUpdateRoleGroup = currentUser?.roleAccess?.some((accessID) => accessID === 'UPDATE_ROLE_GROUP');
+      const hasDeleteRoleGroup = currentUser?.roleAccess?.some((accessID) => accessID === 'DELETE_ROLE_GROUP');
 
       const { refetch } = useQuery({
         enabled: false,

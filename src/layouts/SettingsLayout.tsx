@@ -15,10 +15,10 @@ export function SettingsLayout() {
     },
   };
 
-  const hasRole = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'ROLES_FEATURE');
-  const hasScope = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'SCOPE_FEATURE');
-  const hasUsers = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'USERS_FEATURE');
-  const hasRoleGroup = currentUser?.role.roleScopes.some(({ scope }) => scope?.id === 'ROLE_GROUP_FEATURES');
+  const hasRole = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'ROLES_FEATURE');
+  const hasScope = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'SCOPE_FEATURE');
+  const hasUsers = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'USERS_FEATURE');
+  const hasRoleGroup = currentUser?.role?.roleScopes?.some(({ scope }) => scope?.id === 'ROLE_GROUP_FEATURES');
 
   const subRoutes = [
     hasRole && {

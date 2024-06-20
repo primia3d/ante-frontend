@@ -1,20 +1,20 @@
-import { Loader2Icon } from 'lucide-react';
-import { useAtom } from 'jotai';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
+import { Loader2Icon } from 'lucide-react';
 import { useState } from 'react';
 
+import { createRoleGroup, getRoleGroupList } from '@/api/roleGroup';
+import { getCurrentUser } from '@/api/user';
+import { DataTable } from '@/components/DataTable';
+import { useToast } from '@/components/Toaster';
 import {
-  RoleGroupForm,
-  RoleGroupFormProps,
   RoleGroupColumns,
   RoleGroupFilters,
+  RoleGroupForm,
+  RoleGroupFormProps,
   roleGroupCurrentPageAtom,
   roleGroupPageSizeAtom,
 } from '@/features/RoleGroup';
-import { DataTable } from '@/components/DataTable';
-import { useToast } from '@/components/Toaster';
-import { getCurrentUser } from '@/api/user';
-import { createRoleGroup, getRoleGroupList } from '@/api/roleGroup';
 
 export default function RoleGroupManagement() {
   const { toast } = useToast();
@@ -33,7 +33,7 @@ export default function RoleGroupManagement() {
     queryFn: getCurrentUser,
   });
 
-  const hasCreateRoleGroup = currentUser?.roleAccess.some((accessID) => accessID === 'CREATE_ROLE_GROUP');
+  const hasCreateRoleGroup = currentUser?.roleAccess?.some((accessID) => accessID === 'CREATE_ROLE_GROUP');
 
   const {
     data: { list: roleGroup = [], pagination = [] } = {},

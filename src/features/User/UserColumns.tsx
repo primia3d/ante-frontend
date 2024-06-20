@@ -1,18 +1,18 @@
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { Trash2 } from 'lucide-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { useAtom } from 'jotai';
+import { Trash2 } from 'lucide-react';
 
 import { UserForm, UserFormProps } from './UserForm';
 import ViewUser from './View';
 import { userCurrentPageAtom, userPageSizeAtom } from './userAtom';
 
-import { DataTableColumnHeader } from '@/components/DataTable/DataTableColumnHeader';
+import { deleteUser, getCurrentUser, getUserList, updateUser } from '@/api/user';
 import { ConfirmDialog } from '@/components/ConfirmDialog/ConfirmDialog';
+import { DataTableColumnHeader } from '@/components/DataTable/DataTableColumnHeader';
 import { useToast } from '@/components/Toaster/useToast';
 import { useBoolean } from '@/hooks/useBoolean';
 import { TUser } from '@/types/user';
-import { deleteUser, getCurrentUser, updateUser, getUserList } from '@/api/user';
 
 const columnHelper = createColumnHelper<TUser>();
 
@@ -131,9 +131,9 @@ export const UserColumns = [
         enabled: false,
       });
 
-      const hasViewUser = currentUser?.roleAccess.some((accessID) => accessID === 'VIEW_USERS');
-      const hasUpdateUser = currentUser?.roleAccess.some((accessID) => accessID === 'UPDATE_USERS');
-      const hasDeleteUser = currentUser?.roleAccess.some((accessID) => accessID === 'DELETE_USERS');
+      const hasViewUser = currentUser?.roleAccess?.some((accessID) => accessID === 'VIEW_USERS');
+      const hasUpdateUser = currentUser?.roleAccess?.some((accessID) => accessID === 'UPDATE_USERS');
+      const hasDeleteUser = currentUser?.roleAccess?.some((accessID) => accessID === 'DELETE_USERS');
 
       const { refetch } = useQuery({
         enabled: false,
