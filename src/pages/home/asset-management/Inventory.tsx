@@ -24,6 +24,8 @@ import { cn } from '@/utils/cn';
 import { useAtom } from 'jotai';
 import { ChevronLeftIcon, ChevronRightIcon, EllipsisIcon, EllipsisVerticalIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { getVariantList } from '@/api/inventory/getVariantInventory';
+import { useParams } from 'react-router-dom';
 
 export const inventoryHeader = [
   'Item Number',
@@ -35,153 +37,25 @@ export const inventoryHeader = [
   'Location',
   '',
 ];
-
 export const inventoryItems: TInventory[] = [
   {
-    id: 'inventory-1',
+    id: '',
     itemNumber: 1,
-    description: 'Steel Bar 1',
+    variationName: '',
+    variationDescription: '',
     stocks: 50,
-    uom: 'pc.',
+    unitOfMeasure: 'pc.',
     unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-2',
-    itemNumber: 2,
-    description: 'Steel Bar 2',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-3',
-    itemNumber: 3,
-    description: 'Steel Bar 3',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-4',
-    itemNumber: 4,
-    description: 'Steel Bar 4',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-5',
-    itemNumber: 5,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-6',
-    itemNumber: 6,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-7',
-    itemNumber: 7,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-8',
-    itemNumber: 8,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-9',
-    itemNumber: 9,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-10',
-    itemNumber: 10,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-11',
-    itemNumber: 11,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-12',
-    itemNumber: 12,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-13',
-    itemNumber: 13,
-    description: 'Steel Bar 5',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
-    location: 'main warehouse',
-  },
-  {
-    id: 'inventory-14',
-    itemNumber: 14,
-    description: 'Steel Bar 15',
-    stocks: 50,
-    uom: 'pc.',
-    unitPrice: 0,
-    totalCost: 0,
+    total: 0,
     location: 'main warehouse',
   },
 ];
 
 export default function Inventory() {
+  const { id } = useParams<{ id?: string }>();
+
   const [, setTab] = useAtom(assetManagementTabAtom);
-  const [inventory] = useAtom(inventoryAtom);
+  const [inventory, setInventory] = useState<TInventory[]>([]);
 
   const [currentPage, setCurrentPage] = useAtom(inventoryCurrentPageAtom);
   const [pageSize] = useAtom(inventoryPageSizeAtom);
@@ -193,9 +67,24 @@ export default function Inventory() {
     setSearchQuery(e.currentTarget.value);
   };
 
+  const fetchInventory = async (id: string) => {
+    try {
+      const data = await getVariantList({ page: currentPage, perPage: pageSize, generalInventoryId: id });
+      setInventory(data);
+    } catch (error) {
+      console.error('Error fetching inventory: ', error);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchInventory(id);
+    }
+  }, [currentPage, pageSize, id]);
+
   const filteredInventory = inventory.filter(
     (item) =>
-      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.variationDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.location.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -299,30 +188,32 @@ export default function Inventory() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {displayedFixtures.map(({ description, id, location, stocks, totalCost, unitPrice, uom }, index) => (
-                <TableRow key={id} className="hover:cursor-pointer hover:bg-gray-50">
-                  <TableCell className="p-5 text-custom-300">{(index + 1).toFixed(1)}</TableCell>
-                  <TableCell className="p-5 text-custom-300">{description}</TableCell>
-                  <TableCell className="p-5 text-custom-300">{stocks.toFixed(2)}</TableCell>
-                  <TableCell className="p-5 text-custom-300">{uom}</TableCell>
-                  <TableCell className="p-5 text-custom-300">{unitPrice}</TableCell>
-                  <TableCell className="p-5 text-custom-300">{totalCost}</TableCell>
-                  <TableCell className="p-5 text-custom-300">{location}</TableCell>
-                  <TableCell className="p-5 text-center">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button className="h-7 w-7 rounded-full hover:bg-custom-100">
-                          <EllipsisIcon className="h-5 w-5 text-custom-200" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="">
-                        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Action A</DropdownMenuItem>
-                        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Action B</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {displayedFixtures.map(
+                ({ variationDescription, id, location, stocks, total, unitPrice, unitOfMeasure }, index) => (
+                  <TableRow key={id} className="hover:cursor-pointer hover:bg-gray-50">
+                    <TableCell className="p-5 text-custom-300">{(index + 1).toFixed(1)}</TableCell>
+                    <TableCell className="p-5 text-custom-300">{variationDescription}</TableCell>
+                    <TableCell className="p-5 text-custom-300">{stocks.toFixed(2)}</TableCell>
+                    <TableCell className="p-5 text-custom-300">{unitOfMeasure}</TableCell>
+                    <TableCell className="p-5 text-custom-300">{unitPrice}</TableCell>
+                    <TableCell className="p-5 text-custom-300">{total}</TableCell>
+                    <TableCell className="p-5 text-custom-300">{location}</TableCell>
+                    <TableCell className="p-5 text-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button className="h-7 w-7 rounded-full hover:bg-custom-100">
+                            <EllipsisIcon className="h-5 w-5 text-custom-200" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="">
+                          <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Action A</DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Action B</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ),
+              )}
               {!filteredInventory.length && (
                 <p className="absolute left-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-center text-base text-custom-300">
                   No items found.

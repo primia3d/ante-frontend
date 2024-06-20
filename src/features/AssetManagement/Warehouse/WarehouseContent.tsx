@@ -1,26 +1,31 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/Table';
 import { EllipsisIcon } from 'lucide-react';
 
-import { fetchWarehouses } from '@/api/warehouse/getWarehouseList';
 import { Button } from '@/components/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/DropdownMenu';
-import { useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 import { warehouseViewAtom } from '../assetManagementAtom';
 import { WarehouseCard } from './WarehouseCard';
+import { fetchWarehouses } from '@/api/warehouse/getWarehouseList';
+import { useQuery } from '@tanstack/react-query';
+import { TViewWarehouse } from '@/types/warehouseList';
 
 export function WarehouseContent() {
   const [warehouseView] = useAtom(warehouseViewAtom);
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<TViewWarehouse[]>({
     queryKey: ['warehouses'],
     queryFn: () => fetchWarehouses({ page: 1, perPage: 10 }),
   });
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching data</div>;
+
+  const warehouses = data || [];
+
+  if (!Array.isArray(warehouses)) return <div>Unexpected data format</div>;
 
   if (warehouseView === 'card') {
     return (

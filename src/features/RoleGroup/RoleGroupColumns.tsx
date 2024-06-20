@@ -18,14 +18,14 @@ import { getCurrentUser } from '@/api/user';
 import { deleteRoleGroup, getRoleGroupList, updateRoleGroup } from '@/api/roleGroup';
 
 export const RoleGroupColumns: ColumnDef<TRoleGroup>[] = [
-  {
-    accessorKey: 'id',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
-    cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue<TRoleGroup['id']>()}</div>,
-    meta: {
-      className: 'max-w-[10rem]',
-    },
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
+  //   cell: ({ getValue }) => <div className="truncate font-mono tracking-widest">{getValue<TRoleGroup['id']>()}</div>,
+  //   meta: {
+  //     className: 'max-w-[10rem]',
+  //   },
+  // },
   {
     accessorKey: 'name',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
