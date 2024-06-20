@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { Loader2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { createRole, getRoleList } from '@/api/role';
+import { createRole } from '@/api/role';
 import { getCurrentUser } from '@/api/user';
 import { DataTable } from '@/components/DataTable';
 import { useToast } from '@/components/Toaster';
@@ -14,7 +14,9 @@ import {
   RoleFormProps,
   roleCurrentPageAtom,
   rolePageSizeAtom,
+  roleSearchAtom,
 } from '@/features/Role';
+import { searchRoleList } from '@/api/role/searchRole';
 
 export default function RoleManagement() {
   const { toast } = useToast();
@@ -23,6 +25,7 @@ export default function RoleManagement() {
   // const [sort, setSort] = useAtom(roleSortAtom);
   // const [search] = useAtom(roleSearchAtom);
   const [queryEnabled, setQueryEnabled] = useState(true);
+  const [searchQuery, setSearchQuery] = useAtom(roleSearchAtom);
 
   const createRoleMutation = useMutation({
     mutationFn: createRole,
@@ -39,12 +42,8 @@ export default function RoleManagement() {
     refetch,
     isFetching,
   } = useQuery({
-    queryKey: ['getRoleList'],
-    queryFn: () =>
-      getRoleList({
-        page: currentPage,
-        perPage: pageSize,
-      }),
+    queryKey: ['getRoleList', searchQuery],
+    queryFn: () => searchRoleList({ searchQuery, page: currentPage, perPage: pageSize }),
     enabled: queryEnabled,
   });
 
@@ -93,6 +92,16 @@ export default function RoleManagement() {
     }
   };
 
+  const handleSearch = async () => {
+    setCurrentPage(1);
+    setQueryEnabled(false);
+    setQueryEnabled(true);
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery]);
+
   return (
     <>
       {isFetching && (
@@ -106,10 +115,10 @@ export default function RoleManagement() {
             <h1 className="text-lg font-semibold">Role Management</h1>
             {hasCreateRole && <RoleForm variant="create" onSubmit={handleSubmit} />}
           </div>
+          <RoleFilters onSearch={(query) => setSearchQuery(query)} />
           <DataTable
             data={roles}
             columns={RoleColumns}
-            filters={RoleFilters}
             onPageChange={handlePageChange}
             totalPages={totalPages}
             currentPage={currentPage}

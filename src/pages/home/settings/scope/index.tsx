@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { ScopeColumns, ScopeFilters, scopeCurrentPageAtom, scopePageSizeAtom } from '@/features/Scope';
 import { DataTable } from '@/components/DataTable';
-import { getScopeList } from '@/api/scope';
+import { getScopeList } from '@/api/scope/searchScope';
 
 export default function ScopeManagement() {
   // const { data: currentUser } = useQuery({
@@ -13,6 +13,8 @@ export default function ScopeManagement() {
   // });
   const [currentPage, setCurrentPage] = useAtom(scopeCurrentPageAtom);
   const [pageSize, setPageSize] = useAtom(scopePageSizeAtom);
+  const [searchQuery, setSearchQuery] = useState('');
+
   // const [sort, setSort] = useAtom(scopeSortAtom);
   // const [search] = useAtom(scopeSearchAtom);
 
@@ -23,9 +25,10 @@ export default function ScopeManagement() {
   const [queryEnabled, setQueryEnabled] = useState(true);
 
   const { data: { list: scopes = [], pagination = [] } = {}, refetch } = useQuery({
-    queryKey: ['getScopeList'],
+    queryKey: ['getScopeList', { searchQuery, currentPage, pageSize }],
     queryFn: () =>
       getScopeList({
+        searchQuery,
         page: currentPage,
         perPage: pageSize,
       }),
@@ -69,16 +72,21 @@ export default function ScopeManagement() {
   //   }
   // };
 
+  const handleSearch = (searchQuery: string) => {
+    setSearchQuery(searchQuery);
+    setCurrentPage(1); // Reset page to 1 when performing a new search
+  };
+
   return (
     <>
       <div className="mb-3 flex items-center justify-between">
         <h1 className="text-lg font-semibold">Scope Management</h1>
         {/* {hasCreateScope && <ScopeForm variant="create" onSubmit={onSubmit} />} */}
       </div>
+      <ScopeFilters onSearch={handleSearch} />
       <DataTable
         data={scopes}
         columns={ScopeColumns}
-        filters={ScopeFilters}
         onPageChange={handlePageChange}
         totalPages={totalPages}
         currentPage={currentPage}
