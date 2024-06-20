@@ -37,6 +37,7 @@ export default function LoginPage() {
 
       localStorage.setItem('token', token);
       localStorage.setItem('accountId', accountInformation.id);
+      localStorage.setItem('image', accountInformation.image as string);
       window.location.href = '/dashboard';
     },
     onError: (error: AxiosError) => {

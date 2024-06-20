@@ -9,3 +9,4 @@ export const REQUIRED_MSG = 'Field is required';
 export const TOKEN = localStorage.getItem('token');
 export const ACCOUNT_ID = localStorage.getItem('accountId');
 export const IS_LOGGED_IN = !!TOKEN;
+export const PROFILE_IMAGE = localStorage.getItem('image');
