@@ -79,7 +79,7 @@ export function TaskWidget() {
       </CardHeader>
       <CardContent className="no-scrollbar max-h-[28rem] overflow-y-auto p-4">
         <ul className="flex flex-col items-end gap-2.5">
-          {filteredTasks.map(({ id, dueDate, title, description, createdAt, createdBy, boardLane, timeAgo }) => {
+          {filteredTasks.map(({ id, dueDate, title, description, createdAt, createdBy, boardLane, timeAgo,  }) => {
             const formattedTime = formatDistance(dueDate.toString(), new Date(), {
               addSuffix: true,
             });
@@ -100,6 +100,7 @@ export function TaskWidget() {
                 createdBy={createdBy?.name}
                 boardLane={boardLane?.name}
                 timeAgo={timeAgo}
+                image = {createdBy.image}
               />
             );
           })}
