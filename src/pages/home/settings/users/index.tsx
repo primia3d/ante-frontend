@@ -38,13 +38,22 @@ export default function Users() {
   const hasCreateUsers = currentUser?.roleAccess.some((accessID) => accessID === 'CREATE_USERS');
 
   const handleSubmit: UserFormProps['onSubmit'] = async (values) => {
-    await createMutation.mutateAsync(values);
-    setIsFormOpen(false);
-    toast({
-      description: 'New user has successfully created!',
-      className: 'bg-green-700/80 text-white border border-green-500 rounded-none text-center',
-      duration: 3000,
-    });
+    try {
+      await createMutation.mutateAsync(values);
+      setIsFormOpen(false);
+      toast({
+        description: 'New user has successfully created!',
+        className: 'bg-green-700/80 text-white border border-green-500 rounded-none text-center',
+        duration: 3000,
+      });
+    } catch (error: any) {
+      setIsFormOpen(false);
+      toast({
+        description: error.response.data.message,
+        className: 'bg-red-700/80 text-white border border-red-500 rounded-none text-center',
+        duration: 3000,
+      });
+    }
   };
 
   const values: UserFormProps['values'] = {
