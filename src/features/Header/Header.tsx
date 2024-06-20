@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/DropdownMenu';
 import { useBoolean } from '@/hooks/useBoolean';
+import { PROFILE_IMAGE } from '@/constants/common';
+
 // import { trpc } from '@/libs/trpc/react';
 
 type HeaderProps = {
@@ -23,7 +25,6 @@ export default function Header({ setIsHidden }: HeaderProps) {
   const { value: isNotificationsMenuOpen, set: setIsNotificationsMenuOpen } = useBoolean(false);
   // const { data: backOfficeUser } = trpc.user.user.getCurrentUser.useQuery();
   // const doLogoutMutation = trpc.user.user.doLogout.useMutation();
-
   const handleLogout = async () => {
     localStorage.removeItem('token');
 
@@ -50,7 +51,7 @@ export default function Header({ setIsHidden }: HeaderProps) {
                 variant="secondary"
                 className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full p-0 hover:bg-gray-200"
               >
-                <img src="/images/person01.webp" alt="" className="h-full w-full object-cover" />
+                <img src={PROFILE_IMAGE ?? '/images/person01.webp'} alt="" className="h-full w-full object-cover" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40" align="end">

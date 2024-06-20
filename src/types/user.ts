@@ -21,6 +21,7 @@ export type TUser = {
   role: TRole;
   roleAccess: string[];
   parentUserId: string;
+  image?: string;
 };
 
 export type TUserFormSchema = z.infer<typeof userFormSchema>;
