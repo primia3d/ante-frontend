@@ -12,16 +12,16 @@ import { cn } from '@/utils/cn';
 export function Step2() {
   const form = useFormContext<TUserFormSchema>();
 
-  // Fetch role list
+
   const { data: { list: roles = [] } = {} } = useQuery({
     enabled: true,
     queryKey: ['getRoleList'],
     queryFn: () => getRoleList(),
   });
 
-  // Fetch parent user list based on selected role ID
+  
   const { data: parentUsers = [] } = useQuery({
-    enabled: !!form.watch('roleID'), // Ensure roleID is defined before querying
+    enabled: !!form.watch('roleID'), 
     queryKey: ['getParentUserList', form.watch('roleID')],
     queryFn: () => getParentUserList(form.watch('roleID')),
   });
