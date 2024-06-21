@@ -40,7 +40,7 @@ export function MyTasks() {
       </TabsList>
       <TabsContent value="all" className="p-6">
         <ul className="flex flex-col items-end gap-2.5">
-          {filteredTasks.map(({ id, dueDate, title, description, createdAt }) => {
+          {filteredTasks.map(({ id, dueDate, title, description, createdAt, createdBy, boardLane, timeAgo }) => {
             const formattedTime = formatDistance(dueDate.toString(), new Date(), {
               addSuffix: true,
             });
@@ -57,6 +57,9 @@ export function MyTasks() {
                 description={description}
                 dueDate={formattedEndDate}
                 startDate={formattedStartDate}
+                createdBy={createdBy?.name}
+                boardLane={boardLane?.name}
+                timeAgo={timeAgo}
               />
             );
           })}
@@ -64,7 +67,7 @@ export function MyTasks() {
       </TabsContent>
       <TabsContent value="completed" className="p-6">
         <ul className="flex flex-col items-end gap-2.5">
-          {TASK_WIDGET_DATA.filter(({ isDone }) => isDone).map(({ id, isDone, isRead, time, title, description }) => {
+          {TASK_WIDGET_DATA.filter(({ isDone }) => isDone).map(({ id, isDone, isRead, time, title, description, createdBy, boardLane, timeAgo }) => {
             const formattedTime = formatDistance(time, new Date(), {
               addSuffix: true,
             });
@@ -81,6 +84,9 @@ export function MyTasks() {
                 description={description}
                 dueDate={formattedEndDate}
                 startDate={formattedStartDate}
+                createdBy={createdBy?.name}
+                boardLane={boardLane?.name}
+                timeAgo={timeAgo}
               />
             );
           })}
@@ -89,7 +95,7 @@ export function MyTasks() {
       <TabsContent value="pastDue" className="p-6">
         <ul className="flex flex-col items-end gap-2.5">
           {TASK_WIDGET_DATA.filter(({ isPastDue }) => isPastDue).map(
-            ({ id, isDone, isRead, time, title, description }) => {
+            ({ id, isDone, isRead, time, title, description, createdBy, boardLane, timeAgo }) => {
               const formattedTime = formatDistance(time, new Date(), {
                 addSuffix: true,
               });
@@ -106,6 +112,9 @@ export function MyTasks() {
                   description={description}
                   dueDate={formattedEndDate}
                   startDate={formattedStartDate}
+                  createdBy={createdBy?.name}
+                  boardLane={boardLane?.name}
+                  timeAgo={timeAgo}
                 />
               );
             },

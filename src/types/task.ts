@@ -46,7 +46,16 @@ export type TTask = {
     dateFull: string;
     raw: string;
   };
+  createdBy: {
+    name: string;
+    image: string; 
+  };
+  boardLane: {
+    name: string;
+  };
+  timeAgo: string;
 };
+
 
 export type TAssigneeUser = {
   id: string;

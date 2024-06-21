@@ -119,6 +119,9 @@ export function KanbanItem({ id, title, onDeleteItem, containerId, setIsEditItem
           description={task?.description || ''}
           dueDate={formattedEndDate}
           startDate={formattedStartDate}
+          createdBy={task.createdBy?.name} 
+          boardLane={task.boardLane?.name} 
+          timeAgo={task.timeAgo} 
         />
       ) : null}
     </div>
