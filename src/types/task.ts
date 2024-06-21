@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { taskFormSchema } from '@/schema/taskSchema';
 
+import { TBoardLane } from './boardLane.type';
+
 export type TTaskFormSchema = z.infer<typeof taskFormSchema>;
 
 export type TaskWidgetTabs = 'all' | 'completed' | 'pastDue';
@@ -48,14 +50,13 @@ export type TTask = {
   };
   createdBy: {
     name: string;
-    image: string; 
+    image: string;
   };
   boardLane: {
     name: string;
   };
   timeAgo: string;
 };
-
 
 export type TAssigneeUser = {
   id: string;
@@ -66,4 +67,10 @@ export type TAssigneeUser = {
 export type TAssignedRoleData = {
   role: string;
   users: TAssigneeUser[];
+};
+
+export type TTaskWithBoardLaneInformation = TTask & {
+  isPastDue: boolean;
+  image: string;
+  boardLane: TBoardLane;
 };

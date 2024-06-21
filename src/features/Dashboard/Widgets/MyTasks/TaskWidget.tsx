@@ -24,12 +24,19 @@ export function TaskWidget() {
 
   const handleTabChange = (newTab: TaskWidgetTabs) => () => setTab(newTab);
 
-  const filteredTasks = data || [];
-  // if (tab === 'completed') {
-  //   filteredTasks = data.filter((task) => task.isDone);
-  // } else if (tab === 'pastDue') {
-  //   filteredTasks = data.filter((task) => task.isPastDue);
-  // }
+  let filteredTasks = data || [];
+  if (data) {
+    switch (tab) {
+      case 'completed':
+        filteredTasks = data.filter((task) => task.boardLane.key === 'DONE');
+        break;
+      case 'pastDue':
+        filteredTasks = data.filter((task) => task.isPastDue === true);
+        break;
+      default:
+        filteredTasks = data;
+    }
+  }
 
   return (
     <Card className="appear divide-y rounded-lg bg-white">
@@ -90,6 +97,7 @@ export function TaskWidget() {
             return (
               <TaskItem
                 key={id}
+                id={id}
                 isDone={false}
                 isRead={false}
                 title={title}

@@ -1,13 +1,13 @@
+import { useMutation, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
 import { X } from 'lucide-react';
-
 import { Badge } from '@/components/Badge';
 import { Button } from '@/components/Button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger } from '@/components/Dialog';
 import { CustomIcon } from '@/features/CustomIcon';
 import { useBoolean } from '@/hooks/useBoolean';
 import { cn } from '@/utils/cn';
-
-
+import { moveTaskToInProgress, moveTaskToDone, TMoveTaskResponse } from '@/api/task/moveTask';
+import { useToast } from '@/components/Toaster';
 
 type TaskItemProps = {
   isRead: boolean;
@@ -17,15 +17,64 @@ type TaskItemProps = {
   formattedDueDate: string;
   dueDate: string;
   startDate: string;
-  createdBy: string;  
-  boardLane: string;  
+  createdBy: string;
+  boardLane: string;
   timeAgo: string;
   image: string;
+  id?: number;
 };
 
-export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead, title, description, createdBy, boardLane, timeAgo, image}: TaskItemProps) {
-  const { value: isTaskItemOpen, set: setIsTaskItemOpen } = useBoolean(false);
+function useTaskMutation<TData, TError = unknown, TVariables = void>(
+  mutationFn: (variables: TVariables) => Promise<TData>,
+): UseMutationResult<TData, TError, TVariables> {
+  const { toast } = useToast();
 
+  return useMutation<TData, TError, TVariables>({
+    mutationFn,
+    onSuccess: (data) => {
+      toast({
+        description: (data as TMoveTaskResponse).message,
+        className: 'bg-green-700/70 text-white border border-green-500 rounded-none text-center',
+        duration: 3000,
+      });
+    },
+    onError: (error: TError) => {
+      toast({
+        description: (error as Error).message,
+        className: 'bg-red-700/70 text-white border border-green-500 rounded-none text-center',
+        duration: 3000,
+      });
+    },
+  });
+}
+
+export function TaskItem({
+  formattedDueDate,
+  dueDate,
+  startDate,
+  isDone,
+  isRead,
+  title,
+  description,
+  createdBy,
+  boardLane,
+  timeAgo,
+  image,
+  id,
+}: TaskItemProps) {
+  const { value: isTaskItemOpen, set: setIsTaskItemOpen } = useBoolean(false);
+  const moveTaskToInProgressMutation = useTaskMutation<TMoveTaskResponse, Error, { id: number }>(moveTaskToInProgress);
+  const moveTaskToDoneMutation = useTaskMutation<TMoveTaskResponse, Error, { id: number }>(moveTaskToDone);
+
+  const handleStartTask = async () => {
+    if (id !== undefined) await moveTaskToInProgressMutation.mutateAsync({ id });
+    setIsTaskItemOpen(false);
+  };
+
+  const handleMarkTaskDone = async () => {
+    if (id !== undefined) await moveTaskToDoneMutation.mutateAsync({ id });
+    setIsTaskItemOpen(false);
+  };
   return (
     <Dialog open={isTaskItemOpen} onOpenChange={setIsTaskItemOpen}>
       <DialogTrigger asChild>
@@ -79,7 +128,7 @@ export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead,
             <p className="text-custom-300">{boardLane}</p>
             <div className="my-4 flex items-center gap-2">
               {isDone && <Badge variant="primary">Marked as Done</Badge>}
-              <div className="flex w-full items-center after:mt-0.5 after:flex-1 after:border-t after:border-custom-200 mb-4"></div> 
+              <div className="mb-4 flex w-full items-center after:mt-0.5 after:flex-1 after:border-t after:border-custom-200"></div>
             </div>
           </section>
           <p className="mb-8 text-pretty text-custom-300">{description}</p>
@@ -101,7 +150,7 @@ export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead,
             </div>
             <div className="flex items-center gap-4 py-3">
               <div className="h-9 w-9 overflow-hidden rounded-full">
-                <img src= {image} alt="" className="h-full w-full object-cover" />
+                <img src={image} alt="" className="h-full w-full object-cover" />
               </div>
               <p className="font-bold">{createdBy}</p>
               <p className="ml-auto text-custom-300">{timeAgo}</p>
@@ -112,11 +161,11 @@ export function TaskItem({ formattedDueDate, dueDate, startDate, isDone, isRead,
           <Button type="button" variant="secondary" className="w-full" onClick={() => setIsTaskItemOpen(false)}>
             Cancel
           </Button>
-          <Button type="button" variant="primary" className="w-full">
+          <Button type="button" variant="primary" className="w-full" onClick={handleStartTask}>
             Start this Task
             <CustomIcon variant="externalLink" />
           </Button>
-          <Button type="button" variant="secondary" className="w-full" disabled>
+          <Button type="button" variant="secondary" className="w-full" onClick={handleMarkTaskDone}>
             Mark as Done
           </Button>
         </DialogFooter>

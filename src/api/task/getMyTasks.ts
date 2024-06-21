@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-import { TTask } from '@/types/task';
+import { TTaskWithBoardLaneInformation } from '@/types/task';
 
 type TGetTasksResponse = {
   message: string;
-  taskList: TTask[];
+  taskList: TTaskWithBoardLaneInformation[];
 };
 
 export const getMyTasks = async () => {
