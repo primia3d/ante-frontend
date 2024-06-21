@@ -1,4 +1,5 @@
 import { useMutation, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { Badge } from '@/components/Badge';
 import { Button } from '@/components/Button';
@@ -8,6 +9,7 @@ import { useBoolean } from '@/hooks/useBoolean';
 import { cn } from '@/utils/cn';
 import { moveTaskToInProgress, moveTaskToDone, TMoveTaskResponse } from '@/api/task/moveTask';
 import { useToast } from '@/components/Toaster';
+import { patchIsReadMyTask } from '@/api/dashboard/isRead';
 
 type TaskItemProps = {
   isRead: boolean;
@@ -65,6 +67,14 @@ export function TaskItem({
   const { value: isTaskItemOpen, set: setIsTaskItemOpen } = useBoolean(false);
   const moveTaskToInProgressMutation = useTaskMutation<TMoveTaskResponse, Error, { id: number }>(moveTaskToInProgress);
   const moveTaskToDoneMutation = useTaskMutation<TMoveTaskResponse, Error, { id: number }>(moveTaskToDone);
+  const [isReadTask, setIsReadTask] = useState<boolean>(() => {
+    const storedIsRead = localStorage.getItem(`isReadTask_${id}`);
+    return storedIsRead ? (JSON.parse(storedIsRead) as boolean) : !!isRead;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`isReadTask_${id}`, JSON.stringify(isReadTask));
+  }, [isReadTask, id]);
 
   const handleStartTask = async () => {
     if (id !== undefined) await moveTaskToInProgressMutation.mutateAsync({ id });
@@ -75,10 +85,24 @@ export function TaskItem({
     if (id !== undefined) await moveTaskToDoneMutation.mutateAsync({ id });
     setIsTaskItemOpen(false);
   };
+
+  const handleDialogOpen = async () => {
+    setIsTaskItemOpen(true);
+    if (!isReadTask && id !== undefined) {
+      try {
+        const updatedTask = await patchIsReadMyTask({ id: id.toString() });
+        setIsReadTask(updatedTask.isRead);
+      } catch (error) {
+        console.error('Error marking task as read:', error);
+      }
+    }
+  };
+
   return (
     <Dialog open={isTaskItemOpen} onOpenChange={setIsTaskItemOpen}>
       <DialogTrigger asChild>
         <li
+          onClick={handleDialogOpen}
           className={cn(
             'relative w-full cursor-pointer rounded-xl px-12 py-5 transition-all duration-150 hover:w-[99%] hover:shadow',
             !isRead && 'bg-custom-100',
@@ -89,7 +113,7 @@ export function TaskItem({
           {!isDone && (
             <CustomIcon
               variant="circle"
-              className={cn('absolute left-4 top-4 h-2.5 w-2.5', !isRead ? 'text-error-300' : 'text-custom-200')}
+              className={cn('absolute left-4 top-4 h-2.5 w-2.5', !isReadTask ? 'text-error-300' : 'text-custom-200')}
             />
           )}
           <h3 className="font-bold">{title}</h3>
