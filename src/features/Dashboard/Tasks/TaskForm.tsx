@@ -22,6 +22,7 @@ import { cn } from '@/utils/cn';
 import { getProjectList } from '@/api/projects';
 import { getBoardLaneList } from '@/api/boardLane/getBoardLaneList';
 import { getAssigneeList } from '@/api/task/getAssigneeList';
+import { getMyTasks } from '@/api/task';
 
 export type TaskFormProps = {
   variant: 'create' | 'assign';
@@ -57,12 +58,19 @@ export function TaskForm({ values = defaultValues, variant, onSubmit }: TaskForm
     const modifiedData = { ...data, variant };
     await onSubmit(modifiedData);
     setIsFormOpen(false);
+    await refetchOwnTasksList();
   };
 
   const { data: { list: projectList = [] } = {} } = useQuery({
     enabled: isFormOpen,
     queryKey: ['currentUser'],
     queryFn: () => getProjectList({ page: 1, perPage: 20 }),
+  });
+
+  const { refetch: refetchOwnTasksList } = useQuery({
+    queryKey: ['getMyTasks'],
+    queryFn: () => getMyTasks(),
+    enabled: isFormOpen,
   });
 
   const { data: { list: boardLaneList = [] } = {} } = useQuery({
