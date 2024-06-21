@@ -24,7 +24,7 @@ type CollaboratorsProps = {
   sendDataToParent: (data: User[]) => void;
 };
 
-export const Collaborators = forwardRef<unknown, CollaboratorsProps>(function Collaborators(props) {
+export const Collaborators = forwardRef<unknown, CollaboratorsProps>(function Collaborators(props, ref) {
   const { sendDataToParent } = props;
   const { value: isOpen, set: setIsOpen } = useBoolean(false);
   const [selectedUsers, setSelectedUsers] = useState<TCollaborators[]>([]);

@@ -12,4 +12,6 @@ export type TBoardLane = {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
+  key?: string;
+  isDefault: boolean;
 };
