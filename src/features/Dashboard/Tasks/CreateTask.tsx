@@ -48,6 +48,8 @@ export function CreateTask({ isOpen, setIsOpen }: CreateTaskProps) {
         className: 'bg-red-700/70 text-white border border-green-500 rounded-none text-center',
         duration: 3000,
       });
+    } finally {
+      setIsOpen(false);
     }
   };
   return (
