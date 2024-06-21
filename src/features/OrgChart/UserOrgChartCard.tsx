@@ -39,7 +39,7 @@ export function UserOrgChartCard({ user }: UserOrgChartCardProps) {
     username: '',
     password: '',
     roleID: '',
-    parentUserId: '',
+    parentAccountId: '',
   };
 
   const { users, name, level } = user;

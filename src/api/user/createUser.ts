@@ -10,6 +10,7 @@ type TParams = {
   username: string;
   password: string;
   roleID: string;
+  parentAccountId?: string;
 };
 
 type TCreateUserResponse = {
