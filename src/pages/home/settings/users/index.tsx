@@ -11,16 +11,19 @@ import {
   UserFormProps,
   userCurrentPageAtom,
   userPageSizeAtom,
+  userSearchAtom,
 } from '@/features/User';
 import { useBoolean } from '@/hooks/useBoolean';
 // import { trpc } from '@/libs/trpc/react';
-import { createUser, getCurrentUser, getUserList } from '@/api/user';
+import { createUser, getCurrentUser } from '@/api/user';
+import { searchUserList } from '@/api/user/searchUser';
 
 export default function Users() {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useAtom(userCurrentPageAtom);
   const [pageSize, setPageSize] = useAtom(userPageSizeAtom);
   const [queryEnabled, setQueryEnabled] = useState(true);
+  const [search, setSearch] = useAtom(userSearchAtom);
 
   // const [sort, setSort] = useAtom(userSortAtom);
   // const [search] = useAtom(userSearchAtom);
@@ -38,22 +41,13 @@ export default function Users() {
   const hasCreateUsers = currentUser?.roleAccess?.some((accessID) => accessID === 'CREATE_USERS');
 
   const handleSubmit: UserFormProps['onSubmit'] = async (values) => {
-    try {
-      await createMutation.mutateAsync(values);
-      setIsFormOpen(false);
-      toast({
-        description: 'New user has successfully created!',
-        className: 'bg-green-700/80 text-white border border-green-500 rounded-none text-center',
-        duration: 3000,
-      });
-    } catch (error: any) {
-      setIsFormOpen(false);
-      toast({
-        description: error.response.data.message,
-        className: 'bg-red-700/80 text-white border border-red-500 rounded-none text-center',
-        duration: 3000,
-      });
-    }
+    await createMutation.mutateAsync(values);
+    setIsFormOpen(false);
+    toast({
+      description: 'New user has successfully created!',
+      className: 'bg-green-700/80 text-white border border-green-500 rounded-none text-center',
+      duration: 3000,
+    });
   };
 
   const values: UserFormProps['values'] = {
@@ -68,8 +62,8 @@ export default function Users() {
   };
 
   const { data: { list: users = [], pagination = [] } = {}, refetch } = useQuery({
-    queryKey: ['getUserList'],
-    queryFn: () => getUserList({ page: currentPage, perPage: pageSize }),
+    queryKey: ['searchUserList', search, currentPage, pageSize],
+    queryFn: () => searchUserList({ searchQuery: search, page: currentPage, perPage: pageSize }),
     enabled: queryEnabled,
   });
 
@@ -83,6 +77,13 @@ export default function Users() {
   const handlePageSizeChange = async (newPage: number) => {
     setCurrentPage(1);
     setPageSize(newPage);
+    setQueryEnabled(false);
+    await refetch();
+    setQueryEnabled(true);
+  };
+
+  const handleSearch = async (searchQuery: string) => {
+    setSearch(searchQuery);
     setQueryEnabled(false);
     await refetch();
     setQueryEnabled(true);
@@ -107,7 +108,7 @@ export default function Users() {
       <DataTable
         data={users}
         columns={UserColumns}
-        filters={UserFilters}
+        filters={() => <UserFilters onSearch={handleSearch} />}
         onPageChange={handlePageChange}
         totalPages={pagination[(pagination.length || 0) - 1] ?? 0}
         currentPage={currentPage}

@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { Loader2Icon } from 'lucide-react';
 import { useState } from 'react';
 
-import { createRoleGroup, getRoleGroupList } from '@/api/roleGroup';
+import { createRoleGroup } from '@/api/roleGroup';
 import { getCurrentUser } from '@/api/user';
 import { DataTable } from '@/components/DataTable';
 import { useToast } from '@/components/Toaster';
@@ -15,6 +15,8 @@ import {
   roleGroupCurrentPageAtom,
   roleGroupPageSizeAtom,
 } from '@/features/RoleGroup';
+import { roleSearchAtom } from '@/features/Role';
+import { SearchRoleGroup } from '@/api/roleGroup/searchRoleGroup';
 
 export default function RoleGroupManagement() {
   const { toast } = useToast();
@@ -23,7 +25,7 @@ export default function RoleGroupManagement() {
   const [queryEnabled, setQueryEnabled] = useState(true);
 
   // const [sort, setSort] = useAtom(roleSortAtom);
-  // const [search] = useAtom(roleSearchAtom);
+  const [search, setSearch] = useAtom(roleSearchAtom);
 
   const createRoleGroupMutation = useMutation({
     mutationFn: createRoleGroup,
@@ -40,12 +42,12 @@ export default function RoleGroupManagement() {
     refetch,
     isFetching,
   } = useQuery({
-    queryKey: ['getRoleGroupList'],
+    queryKey: ['SearchRoleGroup'],
     queryFn: () =>
-      getRoleGroupList({
+      SearchRoleGroup({
+        searchQuery: search,
         page: currentPage,
         perPage: pageSize,
-        isDeleted: false,
       }),
     enabled: queryEnabled,
   });
@@ -91,6 +93,13 @@ export default function RoleGroupManagement() {
     }
   };
 
+  const handleSearch = async (searchQuery: string) => {
+    setSearch(searchQuery);
+    setQueryEnabled(false);
+    await refetch();
+    setQueryEnabled(true);
+  };
+
   return (
     <>
       {isFetching && (
@@ -107,7 +116,7 @@ export default function RoleGroupManagement() {
           <DataTable
             data={filteredRoleGroup}
             columns={RoleGroupColumns}
-            filters={RoleGroupFilters}
+            filters={() => <RoleGroupFilters onSearch={handleSearch} />}
             onPageChange={handlePageChange}
             totalPages={totalPages}
             currentPage={currentPage}
