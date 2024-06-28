@@ -11,7 +11,7 @@ type Step1Props = {
   setUserParentIdValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export function Step1({ parentUserId, setUserParentIdValue, variant }: Step1Props) {
+export function Step1({ parentUserId}: Step1Props) {
   const form = useFormContext<TUserFormSchema>();
 
   return (
@@ -32,56 +32,6 @@ export function Step1({ parentUserId, setUserParentIdValue, variant }: Step1Prop
       </div>
       <div className="w-full space-y-3">
         <div>{parentUserId}</div>
-        {variant === 'add' && (
-          <FormField
-            control={form.control}
-            name="parentUserId"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
-                    <FormLabel
-                      className={cn(
-                        'font-bold capitalize leading-7 text-custom-300',
-                        form.formState.errors.parentUserId && 'text-rose-500',
-                      )}
-                    >
-                      Parent User
-                    </FormLabel>
-                    <div className="mt-2">
-                      <select
-                        value={field.value}
-                        onChange={(e) => {
-                          const { value } = e.target;
-                          field.onChange(value);
-                          setUserParentIdValue(value);
-                        }}
-                        className="h-11 w-full rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                        disabled={!!parentUserId}
-                      >
-                        <option value="" disabled>
-                          Select a Parent User
-                        </option>
-                        {/* {roleByGroupData?.map((role) => (
-                        <option key={role.id} value={role.id}>
-                          {role.name}
-                        </option>
-                      ))} */}
-                        <option value="A">Test A</option>
-                        <option value="B">Test B</option>
-                      </select>
-                      {/* {!roleByGroupData ||
-                      (roleByGroupData.length === 0 && (
-                        <div className="text-center text-custom-300">No Users Available for this Role Group</div>
-                      ))} */}
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
 
         <FormField
           control={form.control}
@@ -202,81 +152,6 @@ export function Step1({ parentUserId, setUserParentIdValue, variant }: Step1Prop
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="parentUserId"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <div className="relative">
-                  <FormLabel
-                    className={cn(
-                      'font-bold capitalize leading-7 text-custom-300',
-                      form.formState.errors.parentUserId && 'text-rose-500',
-                    )}
-                  >
-                    Role Parent
-                  </FormLabel>
-                  <div className="mt-2">
-                    <select
-                      value={field.value}
-                      onChange={(e) => {
-                        const { value } = e.target;
-                        field.onChange(value);
-                        setRoleParentIdValue(value);
-                      }}
-                      className="h-11 w-full rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                      disabled={!roleGroupIdValue || !roleByGroupData || !roleByGroupData.length || !!parentUserId}
-                    >
-                      <option value="" disabled>
-                        Select a Parent Role
-                      </option>
-                      {roleByGroupData?.map((role) => (
-                        <option key={role.id} value={role.id}>
-                          {role.name}
-                        </option>
-                      ))}
-                    </select>
-                    {!roleByGroupData ||
-                      (roleByGroupData.length === 0 && (
-                        <div className="text-center text-custom-300">No Roles Available for this Role Group</div>
-                      ))}
-                  </div>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        {/* <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <div className="relative">
-                  <FormLabel
-                    className={cn(
-                      'font-bold capitalize leading-7 text-custom-300',
-                      form.formState.errors.address && 'text-rose-500',
-                    )}
-                  >
-                    Address
-                  </FormLabel>
-                  <Input
-                    placeholder="Enter address..."
-                    className={cn(
-                      'h-11 rounded-lg border-2 border-custom-100 bg-custom-50 placeholder:text-custom-200',
-                      form.formState.errors.address && 'border-rose-500',
-                    )}
-                    {...field}
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
       </div>
     </section>
   );

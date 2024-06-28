@@ -23,7 +23,7 @@ export type UserFormProps = {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
   roleGroupId?: string;
-  parentUserId?: string;
+  parentAccountId?: string;
 };
 
 function renderButton(variant: 'create' | 'edit' | 'add') {
@@ -60,11 +60,11 @@ export function UserForm({
   setIsOpen,
   title,
   variant,
-  parentUserId,
+  parentAccountId,
   roleGroupId,
 }: UserFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [userParentIdValue, setUserParentIdValue] = useState(parentUserId || '');
+  const [userParentIdValue, setUserParentIdValue] = useState(parentAccountId || '');
 
   const form = useForm<TUserFormSchema>({
     resolver: zodResolver(userFormSchema),
@@ -80,7 +80,7 @@ export function UserForm({
         'lastName',
         'email',
         'contactNumber',
-        'parentUserId',
+        'parentAccountId',
         // 'address'
       ]);
 
@@ -91,18 +91,18 @@ export function UserForm({
 
   useEffect(() => {
     if (isOpen) {
-      setUserParentIdValue(parentUserId || '');
+      setUserParentIdValue(parentAccountId || '');
     }
-  }, [isOpen, parentUserId]);
+  }, [isOpen, parentAccountId]);
 
   useEffect(() => {
     const updatedValues = {
       ...values,
-      parentUserId: parentUserId || '',
+      parentUserId: parentAccountId || '',
     };
     form.reset(updatedValues);
     setCurrentStep(1);
-  }, [form, isOpen, values, roleGroupId, parentUserId]);
+  }, [form, isOpen, values, roleGroupId, parentAccountId]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -136,7 +136,7 @@ export function UserForm({
                 {
                   component: Step1,
                   props: {
-                    parentUserId,
+                    parentAccountId,
                     setUserParentIdValue,
                     variant,
                     userParentIdValue,

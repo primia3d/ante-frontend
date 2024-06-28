@@ -59,6 +59,7 @@ export default function Users() {
     username: '',
     password: '',
     roleID: '',
+    parentAccountId: '',
   };
 
   const { data: { list: users = [], pagination = [] } = {}, refetch } = useQuery({

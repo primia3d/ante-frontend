@@ -20,7 +20,7 @@ export type TUser = {
   };
   role: TRole;
   roleAccess: string[];
-  parentUserId: string;
+  parentAccountId: string;
   image?: string;
 };
 

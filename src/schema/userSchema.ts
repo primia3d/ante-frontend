@@ -45,7 +45,7 @@ export const userFormSchema = z.object({
   contactNumber: z.string().min(1, {
     message: 'Contact number is required.',
   }),
-  parentUserId: z.string().optional(),
+  parentAccountId: z.string().optional(),
   image: z.string().optional(),
   // address: z
   //   .string()
