@@ -149,11 +149,10 @@ export function RoleForm({ variant, onSubmit, values = defaultValues, parentRole
   useEffect(() => {
     const updatedValues = {
       ...values,
-      roleGroupId: roleGroupId || '',
       parentRoleId: parentRoleId || '',
     };
     form.reset(updatedValues);
-  }, [form, isFormOpen, values, roleGroupId, parentRoleId]);
+  }, [form, isFormOpen, values, parentRoleId]);
 
   return (
     <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>

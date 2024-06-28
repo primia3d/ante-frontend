@@ -17,6 +17,7 @@ import {
   roleSearchAtom,
 } from '@/features/Role';
 import { searchRoleList } from '@/api/role/searchRole';
+import axios from 'axios';
 
 export default function RoleManagement() {
   const { toast } = useToast();
@@ -79,16 +80,24 @@ export default function RoleManagement() {
       await refetch();
 
       toast({
-        description: 'New scope has successfully created!',
+        description: 'New role has successfully created!',
         className: 'bg-green-700/70 text-white border border-green-500 rounded-none text-center',
         duration: 3000,
       });
     } catch (error) {
-      toast({
-        description: 'Oops! something went wrong',
-        className: 'bg-red-700/70 text-white border border-green-500 rounded-none text-center',
-        duration: 3000,
-      });
+      if (axios.isAxiosError(error) && error.response && error.response.data) {
+        toast({
+          description: error.response.data.message,
+          className: 'bg-red-700/70 text-white border border-green-500 rounded-none text-center',
+          duration: 3000,
+        });
+      } else {
+        toast({
+          description: 'An unexpected error occurred',
+          className: 'bg-red-700/70 text-white border border-green-500 rounded-none text-center',
+          duration: 3000,
+        });
+      }
     }
   };
 

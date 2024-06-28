@@ -17,5 +17,5 @@ type TUpdateRoleResponse = {
 };
 
 export const updateRole = async (params: Params) => {
-  return axios.post<TUpdateRoleResponse>(`/role`, params);
+  return axios.patch<TUpdateRoleResponse>(`/role`, params);
 };
