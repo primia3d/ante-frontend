@@ -30,5 +30,6 @@ export type TRole = {
     scopeID: string;
     scope: TScope;
   }[];
-  parentAccountId: string;
+  parentRoleId: string;
+  roleGroupId: string;
 };

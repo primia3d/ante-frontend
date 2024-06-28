@@ -63,7 +63,7 @@ export const RoleColumns: ColumnDef<TRole>[] = [
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
       const { toast } = useToast();
-      const { description, name, id, roleScope } = row.original;
+      const { description, name, id, roleScope, roleGroupId } = row.original;
 
       const [currentPage] = useAtom(roleCurrentPageAtom);
       const [pageSize] = useAtom(rolePageSizeAtom);
@@ -103,7 +103,7 @@ export const RoleColumns: ColumnDef<TRole>[] = [
           await refetch();
 
           toast({
-            description: 'New scope has successfully created!',
+            description: 'Role has been successfully updated',
             className: 'bg-green-700/70 text-white border border-green-500 rounded-none text-center',
             duration: 3000,
           });
@@ -149,7 +149,7 @@ export const RoleColumns: ColumnDef<TRole>[] = [
                 placement: 'above',
                 select: '',
                 scopeIDs: roleScope.map(({ scopeID }) => scopeID),
-                roleGroupId: '',
+                roleGroupId: roleGroupId,
               }}
             />
           )}

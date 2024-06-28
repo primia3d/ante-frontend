@@ -69,19 +69,21 @@ export default function ViewRole({ id, description, name }: ViewRoleProps) {
           <section>
             <div className="flex items-center justify-between">
               <h4 className="text-base font-semibold text-gray-500">Details</h4>
-              <RoleForm
-                onSubmit={() => {}}
-                variant="edit"
-                values={{
-                  description,
-                  name,
-                  placement: 'above',
-                  select: '',
-                  scopeIDs: [],
-                  roleGroupId: '',
-                  parentRoleId: role?.parentRoleId,
-                }}
-              />
+              {role && (
+                <RoleForm
+                  onSubmit={() => {}}
+                  variant="edit"
+                  values={{
+                    description,
+                    name,
+                    placement: 'above',
+                    select: '',
+                    scopeIDs: role.roleScope.map((scope) => scope.scopeID),
+                    roleGroupId: role.roleGroupId,
+                    parentRoleId: role?.parentRoleId,
+                  }}
+                />
+              )}
             </div>
             <div className="w-full ">
               <h1 className="mb-2 text-xl font-semibold">{name}</h1>
